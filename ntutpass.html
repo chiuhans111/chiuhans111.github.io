@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>北科入口的驗證碼很爛歐</title>
+</head>
+<style>
+    body {
+        background-color: #eee;
+    }
+
+    .main {
+        background-color: white;
+        font-family: '微軟正黑體';
+        position: relative;
+        width: 300px;
+        margin: auto;
+        margin-top: 50px;
+    }
+
+    .center {
+        position: relative;
+        padding: 32px;
+        box-shadow: 8px 8px gray;
+    }
+
+    a {
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        padding: 8px;
+        background-color: rgb(29, 116, 187)
+    }
+
+    p {
+        margin-top: 2px;
+    }
+
+    h2 {
+        margin-top: 16px;
+        margin-bottom: 4px;
+    }
+</style>
+
+<body>
+    <div class="main">
+        <div class="center">
+            <h2>STEP 1</h2>
+            <p>把下面連結拉到書籤列：</p>
+            <a href='javascript:(function(){a={18612:"i",21981:"l",32536:"r",50984:"t",64465:"s",73848:"c",78826:"f",89549:"j",98918:"v",101707:"k",102672:"x",114528:"n",118370:"y",120093:"h",120609:"u",125856:"z",128389:"e",137740:"a",144480:"o",149853:"b",150720:"p",212881:"q",220114:"d",221793:"g",269888:"w",299658:"m"};function c(){var b=e,k=0,d;for(d in b)k+=(d+1)*b[d];this.value=a[k]}var f=document.querySelector("#authImage"),g=document.createElement("canvas");g.width=f.width;g.height=f.height;var h=g.getContext("2d");
+            h.drawImage(f,0,0);for(var l=h.getImageData(0,0,f.width,f.height).data,e=[],m=[],n=!1,p=0;p<f.width;p++){for(var q=!0,r=0;r<f.height;r++){var t=200<l[4*(r*f.width+p)];t&&(q=!1,n=!0);e.push(t?1:0)}q&&(n&&m.push(new c),e=[],n=!1)}var u=m.map(function(b){return b.value}).join("");document.querySelector("#authcode").value=u;})()'
+                title="北科入口驗證碼">辨識北科入口驗證碼</a>
+            <h2>STEP 2</h2>
+            <p>到北科入口網頁，點擊書籤</p>
+            <a href="https://nportal.ntut.edu.tw/">北科入口網</a>
+            <h2>DONE</h2>
+            <p>驗證碼就自動打好了</p>
+            <hr>
+        </div>
+    </div>
+</body>
+
+</html>
