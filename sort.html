@@ -19,13 +19,20 @@
         </div>
         <br>
         <div>
+
             <transition-group name="list">
-                <template v-for="i in array">
+                <template v-for="(i, index) in array[0]">
                     <li v-if="done" :key="i[1]" class="done">
                         {{'█'.repeat(i[0])}}
                     </li>
                     <li v-else :key="i[1]">
                         {{'█'.repeat(i[0])}}
+                        <span v-if="index == array[1]">
+                            &lt; i am pivot
+                        </span>
+                        <span v-if="index == array[2]">
+                            &lt; i am end
+                        </span>
                     </li>
                 </template>
             </transition-group>
@@ -66,7 +73,7 @@
 
         if (start == null) start = 0;
         if (end == null) end = array.length - 1;
-        if (record == null) record = [array.map(x => x)];
+        if (record == null) record = [[array.map(x => x)]];
 
         if (start >= end) return record;
         console.log(start, end);
@@ -92,14 +99,14 @@
             array[i] = array[j];
             array[j] = temp;
 
-            record.push(array.map(x => x));
+            record.push([array.map(x => x), start, end]);
         }
 
         if (array[i][0] < p) {
             var temp = array[start];
             array[start] = array[i];
             array[i] = temp;
-            record.push(array.map(x => x));
+            record.push([array.map(x => x), start, end]);
         }
 
         dynaSort(array, start, i - 1, record);
