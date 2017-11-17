@@ -16,6 +16,9 @@
             <button @click="btn()">
                 swap
             </button>
+            {{length-animate.length}}/{{length}}
+            <input name="cb" id="cb" type="checkbox" v-model="auto">
+            <label for="cb">auto run</label>
         </div>
         <br>
         <div>
@@ -43,31 +46,47 @@
 <script>
 
     var array = [];
-    var animate = [];
 
     var app = new Vue({
         el: "#app",
         data: {
             array,
-            done: false
+            done: false,
+            auto: false,
+            animate: [],
+            length: 0
         },
         methods: {
             btn() {
-                if (animate.length == 0) {
+                if (this.animate.length == 0) {
                     this.done = false;
                     var array = [];
                     for (var i = 0; i < 20; i++) {
-                        array.push([Math.round(Math.random() * 20), i]);
+                        array.push([Math.round(Math.random() * 25), i]);
                     }
-                    animate = dynaSort(array);
+                    this.animate = dynaSort(array);
+                    this.length = this.animate.length;
                 }
-                this.array = animate.shift();
-                if (animate.length == 0) this.done = true;
+                this.array = this.animate.shift();
+                if (this.animate.length == 0) {
+                    this.done = true;
+                    return true;
+                }
+                else return false;
             }
         }
     });
 
-
+    function update() {
+        if (app.auto) app.btn();
+        if (app.done) setTimeout(() => {
+            update();
+        }, 1000);
+        else setTimeout(() => {
+            update();
+        }, 200);
+    }
+    update();
 
     function dynaSort(array, start, end, record) {
 
