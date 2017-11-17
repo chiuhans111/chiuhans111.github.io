@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <button @click="btn()">
+                swap
+            </button>
+        </div>
+        <br>
+        <div>
+            <transition-group name="list">
+                <template v-for="i in array">
+                    <li v-if="done" :key="i[1]" class="done">
+                        {{'█'.repeat(i[0])}}
+                    </li>
+                    <li v-else :key="i[1]">
+                        {{'█'.repeat(i[0])}}
+                    </li>
+                </template>
+            </transition-group>
+        </div>
+
+    </div>
+</body>
+<script>
+
+    var array = [];
+    var animate = [];
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            array,
+            done: false
+        },
+        methods: {
+            btn() {
+                if (animate.length == 0) {
+                    this.done = false;
+                    var array = [];
+                    for (var i = 0; i < 20; i++) {
+                        array.push([Math.round(Math.random() * 20), i]);
+                    }
+                    animate = dynaSort(array);
+                }
+                this.array = animate.shift();
+                if (animate.length == 0) this.done = true;
+            }
+        }
+    });
+
+
+
+    function dynaSort(array, start, end, record) {
+
+        if (start == null) start = 0;
+        if (end == null) end = array.length - 1;
+        if (record == null) record = [array.map(x => x)];
+
+        if (start >= end) return record;
+        console.log(start, end);
+        var p = array[start][0];
+        var i = start + 1;
+        var j = end;
+
+        while (true) {
+
+            while (i < j) {
+                if (array[j][0] < p) break;
+                j--;
+            }
+
+            while (i < j) {
+                if (array[i][0] > p) break;
+                i++;
+            }
+
+            if (i == j) break;
+            console.log('swap', i, j)
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+
+            record.push(array.map(x => x));
+        }
+
+        if (array[i][0] < p) {
+            var temp = array[start];
+            array[start] = array[i];
+            array[i] = temp;
+            record.push(array.map(x => x));
+        }
+
+        dynaSort(array, start, i - 1, record);
+        dynaSort(array, i, end, record);
+        return record;
+    }
+
+
+
+
+</script>
+
+</html>

@@ -1,0 +1,11 @@
+li{
+    transition: all 0.3s;
+}
+.list-move{
+    color: red;
+    transform: translate(20px, 0px);
+}
+
+.done{
+    color: green;
+}
