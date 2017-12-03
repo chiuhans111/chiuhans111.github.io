@@ -70,4 +70,4 @@ $ch:此為二階線性微分方程，有解: *x = e^{\\lambda t}*
 *\\Longrightarrow m\\lambda^2+c\\lambda+k=0*
 *\\Longrightarrow \\lambda=\\frac{-c\\pm\\sqrt{c^2-4mk}}{2m}*
 $en:In this case, the damping coefficient$ch:在這個例子中，阻力係數$ *\\Upsilon=\\frac{c}{2m}*
-$en:and we have the equation$ch:然後我們得到方程式$ *x=e^{-\\Upsilon t} cos(\\omega t)*
+$en:and we have the equation $ch:然後我們得到方程式$  *x=e^{-\\Upsilon t} cos(\\omega t)*
