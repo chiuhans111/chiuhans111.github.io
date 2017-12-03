@@ -39,6 +39,7 @@
     }
 
     .part {
+        margin: 8px;
         color: green;
         float: left;
         width: 25%;
@@ -55,33 +56,37 @@
             <video src="./number.mp4"></video>
             <video src="./number.mp4"></video>
             <video src="./number.mp4"></video>
-            <br> days
+            <hr> days
         </div>
 
         <div class="part">
             <video src="./number.mp4"></video>
             <video src="./number.mp4"></video>
-            <br> hours
+            <hr> hours
         </div>
         <div class="part">
             <video src="./number.mp4"></video>
             <video src="./number.mp4"></video>
-            <br> minutes
+            <hr> minutes
         </div>
         <div class="part">
             <video src="./number.mp4"></video>
             <video src="./number.mp4"></video>
-            <br> seconds
+            <hr> seconds
         </div>
     </div>
     <div class="main">
-        <p>
-            <a href="?1520611200000">sitcon2018</a>,
-            <a href="?1514736000000">newyear</a>,
-            <a href="#" onclick="location.href='?'+(new Date().getTime()+10000)">10 secound</a>
-        </p>
-    </div>
+        <div>
+            <p>
+                <a href="?1520611200000">sitcon2018</a>,
+                <a href="?1514736000000">newyear</a>,
+                <a href="#" onclick="location.href='?'+(new Date().getTime()+10000)">10 secound</a>
+                <br> BGM: Jazz Instrumental Coffee Time Jazz
+            </p>
+        </div>
 
+    </div>
+    <audio src="./bgm.mp3" autoplay="true"></audio>
 </body>
 
 <script>
@@ -109,20 +114,16 @@
         time /= 10;
         n[7] = time % 6;
 
-        time = Math.floor(time);
 
         time /= 6;
         n[6] = time % 10;
         time /= 10;
         n[5] = time % 6;
 
-        time = Math.floor(time);
 
         time /= 6;
         n[4] = time % 12 % 10;
         n[3] = time % 12 / 10;
-
-        time = Math.floor(time);
 
 
         time /= 12;
@@ -139,12 +140,11 @@
                 ns[i] = n[i];
                 x.currentTime = n[i] + 2 / 30;
             }
-            if (x.currentTime < ns[i] + 1) x.play();
+            if (x.currentTime < ns[i] + 0.9) x.play();
             else {
                 x.pause()
-                x.currentTime = ns[i] + 1 - 1 / 30;
+                x.currentTime = ns[i] + 0.95;
             }
-
         })
 
         requestAnimationFrame(update)
