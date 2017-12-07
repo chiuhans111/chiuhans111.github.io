@@ -4,7 +4,7 @@ k=0.1
 c=0.15
 A=10
 # @@calc:
-w=Math.sqrt(this.k/this.m-Math.pow(this.c/this.m/2))
+w=Math.sqrt(this.k/this.m-Math.pow(this.c/this.m/2,2))
 y=this.c/this.m/2
 # @@doc: 
 # $en: PHYSICS REPORT $ch: 物理報告
