@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script></script>
+    <script src="./vue.js"></script>
+</head>
+<style>
+    * {
+        font-size: 1.1em;
+    }
+</style>
+
+<body>
+    <div id="app">
+
+        <textarea cols="30" rows="10" v-model="pattern"></textarea>
+        <textarea cols="30" rows="10" v-model="output"></textarea>
+    </div>
+</body>
+
+<script>
+    var warp = false;
+    function Grid(data) {
+        var me = this;
+        this.data = data.split('\n').map(x => [...x]);
+        this.width = me.data.map(x => x.length).reduce((a, b) => a > b ? a : b, 0);
+        this.height = me.data.length;
+        this.get = function (x, y) {
+            var ox = x, oy = y;
+
+            while (x < 0) x += me.width;
+            while (y < 0) y += me.height;
+            x %= me.width;
+            y %= me.height;
+            if (!warp) if (ox != x || oy != y) return ' ';
+
+            var line = me.data[y];
+            return line[x] == null ? '' : line[x]
+        }
+        this.set = function (x, y, value) {
+            var ox = x, oy = y;
+
+            while (x < 0) x += me.width;
+            while (y < 0) y += me.height;
+            x %= me.width;
+            y %= me.height;
+            if (!warp) if (ox != x || oy != y) return '';
+
+            while (me.data.length <= y) me.data.push([]);
+
+            while (me.data[y].length <= x) me.data[y].push(null);
+            me.data[y][x] = value;
+        }
+        this.toString = function () {
+            return me.data.map(line => line.map(x => x == null ? '' : x).join('')).join('\n');
+        }
+    }
+
+    function Cell(grid, x, y, n) {
+        var me = this;
+        this.value = grid.get(x, y);
+        this.neighbor = [];
+
+        var s = (n - 1) / 2;
+        for (var i = 0; i < n; i++) {
+            for (var j = 0; j < n; j++) {
+
+                if (i == s && j == s) continue;
+
+                me.neighbor.push(grid.get(i - s + x, j - s + y));
+            }
+        }
+    }
+
+    function pgrid(gp, n) {
+        // 統計每個模板位置的neighbor
+        var p = {};
+        for (var i = 0; i < gp.width; i++) {
+            for (var j = 0; j < gp.height; j++) {
+                var cell = new Cell(gp, i, j, n);
+                if (p[cell.value] == null) p[cell.value] = [];
+                p[cell.value].push(cell.neighbor);
+            }
+        }
+
+        // 總和每個位置的neighbor，整合成每個符號分別的機率
+        var ps = {};
+        for (var i in p) {
+            var neighbors = p[i];
+            var combined = [];
+            for (var neighbor of neighbors) {
+                for (var place in neighbor) {
+                    if (combined[place] == null) combined[place] = {};
+                    var key = neighbor[place];
+                    if (combined[place][key] == null) combined[place][key] = 0;
+                    combined[place][key] += 1 / neighbors.length;
+                }
+            }
+            ps[i] = combined;
+        }
+        return ps;
+    }
+
+    // 主要副程式
+    var index = 0;
+
+    function process(n, pattern, old, output) {
+        var gp = new Grid(pattern);
+        var g1 = new Grid(old);
+        var g2 = new Grid(output);
+
+        // mark skip
+        var gs = new Grid(output);
+        for (var i = 0; i < g2.width; i++) {
+            for (var j = 0; j < g2.height; j++) {
+                gs.set(i, j, 0)
+            }
+        }
+
+        var s = (n - 1) / 2;
+        for (var i = 0; i < g2.width; i++) {
+            for (var j = 0; j < g2.height; j++) {
+                if (g1.get(i, j) != g2.get(i, j))
+                    for (var x = 0; x < n; x++) {
+                        for (var y = 0; y < n; y++) {
+                            gs.set(i - s + x, j - s + y, 1)
+                        }
+                    }
+            }
+        }
+        if (gs.width > 0)
+            gs.set(
+                index % gs.width,
+                Math.floor(index / gs.width),
+                1
+            )
+        index++;
+
+        var ps = pgrid(gp, n);
+        //console.log(gs.toString())
+
+        var loss = 0;
+        // 計算每個輸出位置的Cell機率
+        var pp = [];
+        for (var i = 0; i < g2.width; i++) {
+            for (var j = 0; j < g2.height; j++) {
+                if (gs.get(i, j) == 0) continue;
+
+                var cell = new Cell(g2, i, j, n);
+                var temp = g2.get(i, j);
+                var ppp = [];
+                var base = Number.MAX_SAFE_INTEGER;
+                var symbols = [temp];
+                for (var symbol in ps) if (symbol != temp) symbols.push(symbol)
+                for (var symbol of symbols) {
+                    g2.set(i, j, symbol)
+                    var gps = pgrid(g2, n);
+
+                    var score = 0;
+                    if (ps[symbol] == null) score = Number.MAX_SAFE_INTEGER;
+                    for (var k in ps) {
+                        if (score > base) break;
+                        for (var place in ps[k]) {
+                            for (var l in ps) {
+
+                                var a = ps[k][place][l];
+                                var b = 0;
+                                if (gps[k] && gps[k][place])
+                                    b = gps[k][place][l];
+
+                                if (a == null) a = 0;
+                                if (b == null) b = 0;
+                                if (a == 0 && b != 0) {
+                                    score = Number.MAX_SAFE_INTEGER;
+                                }
+
+                                var d = a - b;
+                                score += d * d;
+
+                            }
+                        }
+
+                    }
+                    if (symbol == temp) {
+                        base = score;
+                        loss += score;
+                    }
+                    score += Math.random();
+
+                    ppp.push({
+                        x: i, y: j, symbol, score
+                    })
+                }
+                for (var k in ppp) if (ppp[k].score < base) pp.push(ppp[k])
+
+                g2.set(i, j, temp);
+            }
+        }
+
+        pp = pp.sort((a, b) => a.score - b.score)
+
+        var max = pp.map(x => x.score).reduce((a, b) => a > b ? a : b, 0);
+        //console.log(pp)
+
+        for (var target of pp) {
+            if (g2.get(target.x, target.y) != target.symbol) {
+                g2.set(target.x, target.y, target.symbol);
+                break;
+            }
+        }
+
+
+        return g2.toString();
+    }
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            n: 3,
+            pattern: "123\n456\n789",
+            output: ""
+        }
+    })
+
+    var old = "";
+    function update() {
+        var result = process(3, app.pattern, old, app.output);
+        old = app.output;
+        app.output = result;
+        requestAnimationFrame(update)
+    }
+    update();
+</script>
+
+</html>

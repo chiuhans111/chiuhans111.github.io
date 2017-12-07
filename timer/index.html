@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        font-family: Arial, Helvetica, sans-serif
+    }
+
+    body {
+        transition: all 0.6s;
+    }
+
+    body.inv {
+        background-color: black;
+        filter: invert()
+    }
+
+
+    img {
+        max-width: 90%;
+    }
+
+    video {
+        width: 25%;
+        max-width: 200px;
+    }
+
+    .main {
+        width: 90%;
+        margin: auto;
+        margin-top: 64px;
+        display: flex
+    }
+
+    .part {
+        margin: 8px;
+        color: green;
+        float: left;
+        width: 25%;
+        text-align: center
+    }
+</style>
+
+<body>
+    <div class="main">
+        <img class="sitcon" src="./pcs.svg" alt="" height="256" hidden>
+    </div>
+    <div class="main">
+        <div class="part">
+            <video src="./number.mp4"></video>
+            <video src="./number.mp4"></video>
+            <video src="./number.mp4"></video>
+            <hr> days
+        </div>
+
+        <div class="part">
+            <video src="./number.mp4"></video>
+            <video src="./number.mp4"></video>
+            <hr> hours
+        </div>
+        <div class="part">
+            <video src="./number.mp4"></video>
+            <video src="./number.mp4"></video>
+            <hr> minutes
+        </div>
+        <div class="part">
+            <video src="./number.mp4"></video>
+            <video src="./number.mp4"></video>
+            <hr> seconds
+        </div>
+    </div>
+    <div class="main">
+        <div>
+            <p>
+                <a href="?1520611200000">sitcon2018</a>,
+                <a href="?1514736000000">newyear</a>,
+                <a href="#" onclick="location.href='?'+(new Date().getTime()+10000)">10 secound</a>
+               
+            </p>
+        </div>
+
+    </div>
+   
+</body>
+
+<script>
+    var videos = Array.from(document.querySelectorAll('video'));
+    videos.map(v => v.volume = 0)
+    var target = new Date(+location.href.match(/\?(.*)$/)[1]);
+    console.log(target)
+
+    var n = [...Array(videos.length)].map((x, i) => 0)
+    var ns = [...Array(videos.length)].map((x, i) => -1)
+
+    if (target.getTime() == 1520611200000) document.querySelector('.sitcon').hidden = false;
+
+
+    function update() {
+        var time = target - new Date().getTime();
+
+        if (Math.floor(n[8]) % 2 == 0 && time <= 10000 && time > 0) document.body.className = 'inv';
+        else document.body.className = '';
+
+        time = Math.abs(time)
+
+        time /= 1000;
+        n[8] = time % 10;
+        time /= 10;
+        n[7] = time % 6;
+
+
+        time /= 6;
+        n[6] = time % 10;
+        time /= 10;
+        n[5] = time % 6;
+
+
+        time /= 6;
+        n[4] = time % 12 % 10;
+        n[3] = time % 12 / 10;
+
+
+        time /= 12;
+        n[2] = time % 10;
+        n[1] = time / 10 % 10;
+        n[0] = time / 100 % 10;
+
+
+
+
+        videos.map((x, i) => {
+            n[i] = Math.floor(n[i])
+            if (ns[i] != n[i]) {
+                ns[i] = n[i];
+                x.currentTime = n[i] + 2 / 30;
+            }
+            if (x.currentTime < ns[i] + 0.9) x.play();
+            else {
+                x.pause()
+                x.currentTime = ns[i] + 0.95;
+            }
+        })
+
+        requestAnimationFrame(update)
+
+    }
+
+    update();
+</script>
+
+</html>
