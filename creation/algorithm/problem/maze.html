@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>數字迷宮</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.3/vue.min.js"></script>
+
+</head>
+<style>
+    td {
+        text-align: center;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+    }
+
+    .path {
+        background-color: orange;
+    }
+
+    td {
+        border: solid white 4px;
+    }
+</style>
+
+<body>
+
+    <div id="app">
+        <h1>Number Maze Visulized</h1>
+        <p>number maze is a 2D grid, you can go left, right, up and down.</p>
+        <p>number in each block is the cost to visit that block, plz find the minimum cost from top left to bottom right</p>
+        <hr>
+
+        <h2>Problem</h2>
+        <textarea name="" id="" cols="30" rows="6" v-model="problemInput"></textarea>
+        <br>
+        <h2>
+
+            <button @click="reset">run again</button>
+            auto run?
+            <input type="checkbox" name="" id="" v-model="auto"> faster mode?
+            <input type="checkbox" name="" id="" v-model="faster">
+        </h2>
+        <h3>THE MAZE
+            <button @click="oneStep">take 1 step</button>
+            <button @click="bigStep">take big step</button>
+            Steps:{{steps}}
+        </h3>
+
+        <hr>
+        <h2>{{done}} Answer is: {{answer}} </h2>
+
+
+        <table>
+
+            <template v-for="line in g">
+                <tr>
+                    <template v-for="block in line">
+                        <td :class="{path: block.path==answerSteps}" :style="{borderColor: 'rgba(0,255,0,'+(1-Math.min(10,steps-block.steps+1)/10)+')'}"
+                            type="text">
+                            {{block.value}}
+                        </td>
+                    </template>
+                </tr>
+            </template>
+        </table>
+        <h3>COSTS MAPPED</h3>
+        <table>
+            <template v-for="line in s">
+                <tr>
+                    <template v-for="block in line">
+                        <td :style="{backgroundColor:colors[block.type]}">
+                            {{block.value}}
+                        </td>
+                    </template>
+                </tr>
+            </template>
+        </table>
+
+    </div>
+
+
+
+</body>
+<script>
+
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            m: 0,
+            n: 0,
+            s: [[]],
+            steps: 0,
+            answerSteps: 0,
+            queue: [],
+            answer: null,
+            auto: true,
+            faster: false,
+            done: 'not sure',
+            problemInput: '4 \n5 \n0 3 1 2 9 \n7 3 4 9 9 \n1 7 5 5 3 \n2 3 4 2 5 ',
+            colors: {
+                visited: 'orange',
+                updated: 'green'
+            }
+        },
+
+        computed: {
+            g() {
+                var lines = this.problemInput.split('\n');
+                var m = +lines[0];
+                var n = +lines[1];
+                this.m = m;
+                this.n = n;
+
+                var g = lines.slice(2).map(x => {
+                    return x.split(' ').map(y => {
+                        return {
+                            value: +y,
+                            steps: 0,
+                        }
+                    }).slice(0, n)
+                }).slice(0, m)
+
+                var s = g.map(x => x.map(y => ({ value: '?' })));
+                this.s = s;
+                this.queue = [];
+                this.answer = null;
+                this.steps = 0;
+                this.answerSteps = 0;
+                this.done = 'not sure';
+
+                return g;
+            },
+        },
+
+        methods: {
+            reset(g) {
+                var temp = this.problemInput;
+                this.problemInput = 0;
+                this.problemInput = temp;
+            },
+            OneQueue() {
+
+
+                if (this.queue.length == 0) {
+                    if (this.answer != null) return 'done'; // already done
+                    this.queue.push({ x: 0, y: 0, step: 0 }); // first step
+                }
+                this.steps++;
+                var c = this.queue.shift();
+                if (c.x < 0 || c.x >= this.m) return false;    // out
+                if (c.y < 0 || c.y >= this.n) return false;    // out
+                this.g[c.x][c.y].steps = this.steps;
+                this.s[c.x][c.y].type = 'visited';
+
+                c.step += this.g[c.x][c.y].value;
+                if (this.s[c.x][c.y].value != '?' &&
+                    c.step >= this.s[c.x][c.y].value) return;
+                this.s[c.x][c.y].value = c.step;  // step in
+                this.s[c.x][c.y].type = 'updated';
+
+                if (c.x == this.m - 1 && c.y == this.n - 1 && (c.step < this.answer || this.answer == null)) {
+                    this.answer = c.step;
+                    this.answerSteps++;
+                    var p = c;
+                    while (p != null) {
+                        this.g[p.x][p.y].path = this.answerSteps;
+                        p = p.path;
+                    }
+
+                    return; // the end
+                }
+
+                [[-1, 0], [1, 0], [0, -1], [0, 1]].map(dir => {
+                    var nx = dir[0] + c.x;
+                    var ny = dir[1] + c.y;
+                    var ns = c.step;
+                    this.queue.push({
+                        x: nx,
+                        y: ny,
+                        step: ns,
+                        path: c
+                    })
+                })
+
+
+
+
+            },
+            oneStep() {
+                var result = this.OneQueue();
+                if (result == 'done') this.done = 'DONE!';
+            },
+            bigStep() {
+                var x = this.queue.length;
+                if (x == 0) x = 1;
+                for (var i = 0; i < x; i++) this.oneStep();
+            }
+        }
+    })
+
+    function update() {
+        if (app.auto) {
+            if (app.faster) app.bigStep();
+            else app.oneStep();
+        }
+        requestAnimationFrame(update);
+    }
+
+    update();
+</script>
+
+</html>
