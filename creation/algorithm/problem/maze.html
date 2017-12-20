@@ -36,6 +36,7 @@
 
         <h2>Problem</h2>
         <textarea name="" id="" cols="30" rows="6" v-model="problemInput"></textarea>
+        <button @click="complete">fill blanks</button>
         <br>
         <h2>
 
@@ -127,13 +128,9 @@
                         }).slice(0, n)
                     }).slice(0, m)
 
-                    while (g.length < m) g.push([]);
-                    g.map(x => {
-                        while (x.length < n) x.push({
-                            steps: 0,
-                            value: Math.floor(Math.random() * 9) + 1
-                        })
-                    })
+
+
+                    console.log('eh')
 
                     var s = g.map(x => x.map(y => ({ value: '?' })));
                     this.s = s;
@@ -156,9 +153,33 @@
                 this.problemInput = 0;
                 this.problemInput = temp;
             },
+            complete() {
+                var flag = false;
+                while (this.g.length < this.m) {
+                    this.g.push([]);
+                    flag = true;
+                }
+                this.g.map(x => {
+                    while (x.length < this.n) {
+                        flag = true;
+                        x.push({
+                            steps: 0,
+                            value: Math.floor(Math.random() * 9) + 1
+                        })
+                    }
+                })
+                var newtext = this.m + '\n' + this.n + '\n' + this.g.map(x => x.map(x => x.value).join(' ')).join('\n')
+                if (newtext != this.problemInput) this.problemInput = newtext;
+
+            },
             OneQueue() {
 
-
+                this.queue = this.queue.sort((a, b) => {
+                    var s = b.x + b.y - a.x - a.y;
+                    if (Math.abs(s) < (this.m + this.n) / 2)
+                        return a.step - b.step;
+                    return s;
+                })
                 if (this.queue.length == 0) {
                     if (this.answer != null) return 'done'; // already done
                     this.queue.push({ x: 0, y: 0, step: 0 }); // first step
@@ -176,19 +197,23 @@
                 this.s[c.x][c.y].value = c.step;  // step in
                 this.s[c.x][c.y].type = 'updated';
 
-                if (c.x == this.m - 1 && c.y == this.n - 1 && (c.step < this.answer || this.answer == null)) {
-                    this.answer = c.step;
+                var goal = (c.x == this.m - 1 && c.y == this.n - 1) && (c.step < this.answer || this.answer == null);
+
+                if ((goal || this.answer == null)) {
                     this.answerSteps++;
                     var p = c;
                     while (p != null) {
                         this.g[p.x][p.y].path = this.answerSteps;
                         p = p.path;
                     }
+                }
 
+                if (goal) {
+                    this.answer = c.step;
                     return; // the end
                 }
 
-                [[-1, 0], [1, 0], [0, -1], [0, 1]].map(dir => {
+                [[-1, 0], [0, -1], [1, 0], [0, 1]].map(dir => {
                     var nx = dir[0] + c.x;
                     var ny = dir[1] + c.y;
                     var ns = c.step;
@@ -209,7 +234,7 @@
                 if (result == 'done') this.done = 'DONE!';
             },
             bigStep() {
-                var x = this.queue.length;
+                var x = this.queue.length / 4;
                 if (x == 0) x = 1;
                 for (var i = 0; i < x; i++) this.oneStep();
             }
@@ -217,9 +242,14 @@
     })
 
     function update() {
-        if (app.auto) {
-            if (app.faster) app.bigStep();
-            else app.oneStep();
+        try {
+
+            if (app.auto) {
+                if (app.faster) app.bigStep();
+                else app.oneStep();
+            }
+        } catch (e) {
+            console.log(e);
         }
         requestAnimationFrame(update);
     }
