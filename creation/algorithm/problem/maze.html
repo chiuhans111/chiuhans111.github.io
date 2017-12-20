@@ -110,30 +110,43 @@
 
         computed: {
             g() {
-                var lines = this.problemInput.split('\n');
-                var m = +lines[0];
-                var n = +lines[1];
-                this.m = m;
-                this.n = n;
+                try {
 
-                var g = lines.slice(2).map(x => {
-                    return x.split(' ').map(y => {
-                        return {
-                            value: +y,
+                    var lines = this.problemInput.split('\n');
+                    var m = +lines[0];
+                    var n = +lines[1];
+                    this.m = m;
+                    this.n = n;
+
+                    var g = lines.slice(2).map(x => {
+                        return x.split(' ').map(y => {
+                            return {
+                                value: +y,
+                                steps: 0,
+                            }
+                        }).slice(0, n)
+                    }).slice(0, m)
+
+                    while (g.length < m) g.push([]);
+                    g.map(x => {
+                        while (x.length < n) x.push({
                             steps: 0,
-                        }
-                    }).slice(0, n)
-                }).slice(0, m)
+                            value: Math.floor(Math.random() * 9) + 1
+                        })
+                    })
 
-                var s = g.map(x => x.map(y => ({ value: '?' })));
-                this.s = s;
-                this.queue = [];
-                this.answer = null;
-                this.steps = 0;
-                this.answerSteps = 0;
-                this.done = 'not sure';
+                    var s = g.map(x => x.map(y => ({ value: '?' })));
+                    this.s = s;
+                    this.queue = [];
+                    this.answer = null;
+                    this.steps = 0;
+                    this.answerSteps = 0;
+                    this.done = 'not sure';
 
-                return g;
+                    return g;
+                } catch (e) {
+
+                }
             },
         },
 
