@@ -141,8 +141,4 @@ function SitconCanvas(element, width, height, gridsize) {
             }
         }
     }
-
-
-
-
 }
