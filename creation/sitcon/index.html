@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    canvas {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+
+<body>
+    <canvas></canvas>
+</body>
+<script src="SitconVisual.js"></script>
+<script src="https://rawgit.com/spite/ccapture.js/master/build/CCapture.all.min.js"></script>
+<script>
+    var Canvas = new SitconCanvas('canvas', 8, 7, 100);
+    var count = 0;
+    /*
+    var capturer = new CCapture({ format: 'png' });
+    capturer.start();
+    */
+    function update() {
+
+        Canvas.draw([
+            {
+                c1: theme.red,
+                c2: theme.orange,
+                path: [[1, 0], [1, 2], [0, 2], [0, 0], [1, 0]],
+                x: 1,
+                y: 0
+            },
+            {
+                c1: theme.red,
+                c2: theme.orange,
+                path: [[0, 0], [0, 2]],
+                x: 3,
+                y: 0
+            },
+            {
+                c1: theme.red,
+                c2: theme.orange,
+                path: [[1, 0], [1, 2], [0, 2], [0, 0], [1, 0]],
+                x: 4,
+                y: 0
+            },
+            {
+                c1: theme.red,
+                c2: theme.orange,
+                path: [[0, 0], [0, 2]],
+                x: 6,
+                y: 0
+            },
+            //
+
+            {
+                c1: theme.blue,
+                c2: theme.green,
+                path: [[1, 0], [1, 2], [0, 2], [0, 0], [1, 0]],
+                x: 1,
+                y: 4
+            },
+            {
+                c1: theme.blue,
+                c2: theme.green,
+                path: [[1, 0], [1, 2], [0, 2], [0, 0], [1, 0]],
+                x: 3,
+                y: 4
+            },
+            {
+                c1: theme.blue,
+                c2: theme.green,
+                path: [[0, 0], [0, 2]],
+                x: 5,
+                y: 4
+            },
+            {
+                c1: theme.blue,
+                c2: theme.green,
+                path: [[0, 0], [0, 2]],
+                x: 6,
+                y: 4
+            }
+        ], count);
+        count += 0.02;
+        /*
+        capturer.capture(Canvas.element);
+        if (count > 2) {
+            capturer.stop();
+            capturer.save();
+        } else*/
+        requestAnimationFrame(update);
+
+    }
+    update();
+</script>
+
+</html>
