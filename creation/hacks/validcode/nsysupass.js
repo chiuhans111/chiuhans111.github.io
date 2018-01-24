@@ -116,7 +116,7 @@ function process(img) {
     var imgdt = ctx.getImageData(0, 0, canvas.width, canvas.height);
     var data = imgdt.data;
     var cdata = [];
-    // process the data
+    // convert to black and white
     for (var j = 0; j < img.height; j++) {
         for (var i = 0; i < img.width; i++) {
             var index = (i + j * img.width) * 4;
@@ -125,10 +125,10 @@ function process(img) {
             cdata.push(value);
         }
     }
-    // put back the data
+    // display black white image
     dtoi(cdata, img.width).then(tobody);
 
-    // clean
+    // clean the image
     var cdata2 = cdata.map(x => false);
     for (var j = 0; j < img.height - 1; j++) {
         for (var i = 0; i < img.width - 1; i++) {
@@ -147,8 +147,11 @@ function process(img) {
         }
     }
 
+    // display clean image
     dtoi(cdata2, img.width).then(tobody);
 
+    
+    // start to cut image in pieces
     var buffer = [];
     var sets = [];
     var blanks = 0;
@@ -160,6 +163,7 @@ function process(img) {
             if (cdata2[index]) blankline = false;
         }
         if (blankline) blanks++;
+        // if more than 1 blank line, then cut the image
         if (blanks > 1) {
             if (buffer.filter(x => x).length > 10)
                 sets.push(
@@ -171,18 +175,21 @@ function process(img) {
         }
     }
 
+    // display all images
     sets.map(set => dtoi(set, img.height, true).then(tobody));
 
+    // the input use to display result
     var resultbox = document.createElement('input');
     tobody(resultbox);
 
 
-    // hashs
+    // generate 9 feature from 1 image
     var result = [];
     sets.map(set => {
         var w = img.height;
         var h = set.length / w;
 
+        
         var cx = 0;
         var cy = 0;
 
@@ -190,21 +197,26 @@ function process(img) {
         var sy = 0;
 
         var debug = set.map(x => [0, 0, 0]);
+
+        // directional filters: left-right, top-bottom, ...
         var filters = [
-            [[0, 0], [1, 0], [-1, 0]],
-            [[0, 0], [0, 1], [0, -1]],
-            [[0, 0], [1, 1], [-1, -1]],
-            [[0, 0], [1, -1], [-1, 1]],
+            [[0, 0], [1, 0], [-1, 0]],  // |
+            [[0, 0], [0, 1], [0, -1]],  // -
+            [[0, 0], [1, 1], [-1, -1]], // \
+            [[0, 0], [1, -1], [-1, 1]], // /
             [[0, 0], [1, 0], [-1, 0], [2, 0], [-2, 0]],
             [[0, 0], [0, 1], [0, -1], [0, 2], [0, -2]],
         ]
 
+        
         var hash = [0, 0, 0, 0, 0, 0];
+
         var mass = set.filter(x => x).length;
         for (var j = 1; j < h - 1; j++) {
             for (var i = 1; i < w - 1; i++) {
                 var index = (i + j * w);
 
+                // applying filters
                 for (var fi in filters) {
                     var filter = filters[fi];
                     var sum = 0;
@@ -235,6 +247,7 @@ function process(img) {
             }
         }
 
+        // display filtered images
         dtoi(debug, w, true).then(tobody)
 
         cx /= sx * w;
@@ -250,7 +263,8 @@ function process(img) {
         hash.push(Math.round(cx * 100))
         hash.push(Math.round(cy * 100))
 
-        // analyze
+        
+        // find the closest possible number to this image piece
 
         var dists = [];
         var min = Number.MAX_VALUE;
@@ -283,6 +297,8 @@ function process(img) {
             return true;
         })
 
+        // slice the possible number
+        // dists.splice(<how much number you want to search> ,99);
         dists.splice(2, 99);
 
         console.log(n, hash)
@@ -297,6 +313,8 @@ function process(img) {
         select: result.map(x => 0)
     });
 
+
+    // expand the possibles (t<how much deeper you want to expand the searching tree)
     for (var t = 0; t < 1; t++) {
         var queue = possibles.slice(i);
         i += queue.length;
