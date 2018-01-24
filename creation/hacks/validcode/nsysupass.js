@@ -1,14 +1,31 @@
-document.body.innerHTML = "";
 
-var counter = 0;
+/**
+ * set debugmode false to disable visual outputs
+ */
+var debugmode = true;
+
+/**
+ * Get the URL of validcode img
+ * ( using cors-anywhere to get CORS image.. )
+ */
 function getUrl() {
-    return 'http://cors-anywhere.herokuapp.com/http://selcrs.nsysu.edu.tw/validcode.asp?epoch=' + counter++;
+    return 'http://cors-anywhere.herokuapp.com/http://selcrs.nsysu.edu.tw/validcode.asp';
 }
 
+/**
+ * Append Html element to document.body
+ * @param {HTMLElement} element 
+ */
 function tobody(element) {
-    document.body.appendChild(element);
+    if (debugmode)
+        document.body.appendChild(element);
 }
 
+/**
+ * Get image from url
+ * @param {String} url 
+ * @returns {Promise<HTMLImageElement>}
+ */
 function getImg(url) {
     var img = document.createElement('img');
     img.crossOrigin = "Anonymous"
@@ -18,7 +35,15 @@ function getImg(url) {
     }))
 }
 
+/**
+ * Data To Image, display 2D array as a Image
+ * @param {Array<Number>} data the data to display
+ * @param {Number} w width of the data image
+ * @param {Boolean} flipxy swap X Y coordinate
+ * @returns {Promise<HTMLImageElement>}
+ */
 function dtoi(data, w, flipxy = false) {
+
     var canvas = document.createElement('canvas');
     canvas.width = flipxy ? data.length / w : w;
     canvas.height = flipxy ? w : data.length / w;
@@ -56,6 +81,11 @@ function dtoi(data, w, flipxy = false) {
 }
 
 
+/**
+ * Image to Canvas
+ * @param {HTMLImageElement} img
+ * @returns {{canvas:HTMLCanvasElement, ctx:CanvasRenderingContext2D}} {canvas, ctx}
+ */
 function itoc(img) {
     var canvas = document.createElement('canvas');
     canvas.width = img.width;
@@ -68,8 +98,16 @@ function itoc(img) {
     }
 }
 
-function process(img) {
 
+
+/**
+ * Valid Code Recognition Process,
+ * returns an array of possible valid code String
+ * @param {HTMLImageElement} img Image of valid code
+ * @returns {Array<String>} result
+ */
+function process(img) {
+    if (debugmode) document.body.innerHTML = "";
     var { canvas, ctx } = itoc(img);
 
     tobody(img);
@@ -136,7 +174,7 @@ function process(img) {
     sets.map(set => dtoi(set, img.height, true).then(tobody));
 
     var resultbox = document.createElement('input');
-    document.body.appendChild(resultbox);
+    tobody(resultbox);
 
 
     // hashs
@@ -282,13 +320,14 @@ function process(img) {
 
 
     resultbox.value = possibles.map(x => x.value.join('')).join(' , ')
+    return possibles.map(x => x.value.join(''));
     //
 }
 
 
-// main function
-getImg(getUrl()).then(process);
-
+/**
+ * Data for Recognition
+ */
 var maps = {
     1: [56, 58, 38, 48, 40, 44, 51, 66, 59],
     11: [65, 68, 46, 50, 50, 57, 56, 59, 50],
@@ -323,6 +362,7 @@ var maps = {
     54: [43, 75, 37, 39, 29, 64, 52, 44, 29],
     55: [43, 73, 35, 34, 30, 63, 58, 33, 40],
     56: [49, 74, 42, 46, 33, 63, 58, 42, 23],
+    57: [48, 72, 39, 45, 32, 58, 58, 44, 42],
 
     6: [54, 67, 41, 42, 40, 55, 68, 56, 28],
     61: [55, 74, 46, 52, 40, 63, 67, 41, 28],

@@ -26,6 +26,13 @@
 
 <body>
     <script src="nsysupass.js"></script>
+    <script>
+        debugmode = true;
+        // main function call to process
+        getImg(getUrl()).then(process).then(result => {
+            console.log('possibles:', result.join(' , '))
+        });
+    </script>
 </body>
 
 </html>
