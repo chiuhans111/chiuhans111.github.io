@@ -1,18 +1,34 @@
 <pre></pre>
 <style>
     body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
         background-color: black;
         color: white;
+        overflow: scroll;
     }
 
     ::-webkit-scrollbar {
-        width: 2;
+        width: 0;
         background-color: black;
     }
 </style>
 <script src="fakecode.js"></script>
 <script>
     var pre = document.querySelector('pre');
+    document.body.onclick = function () {
+        var elem = document.body;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        }
+    }
     function update() {
 
         var code = generator.next().value;
