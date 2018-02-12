@@ -1,0 +1,27 @@
+<pre></pre>
+<style>
+    body {
+        background-color: black;
+        color: white;
+    }
+
+    ::-webkit-scrollbar {
+        width: 2;
+        background-color: black;
+    }
+</style>
+<script src="fakecode.js"></script>
+<script>
+    var pre = document.querySelector('pre');
+    function update() {
+
+        var code = generator.next().value;
+        pre.textContent += code;
+
+        if (document.body.scrollHeight - document.body.scrollTop < innerHeight + 200)
+            document.body.scrollTop = document.body.scrollHeight;
+
+        requestAnimationFrame(update);
+    }
+    update();
+</script>
