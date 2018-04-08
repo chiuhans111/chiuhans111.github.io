@@ -82,6 +82,7 @@
     })
 
     function startPage() {
+        ctx.textAlign = 'center';
         ctx.clearRect(0, 0, innerWidth, innerHeight);
         ctx.font = (Math.sin(frameCount / 60 * Math.PI * 2) * 5 + 60) + 'px 微軟正黑體';
         ctx.fillText("準備好之後，請點畫面開始遊戲", innerWidth / 2, innerHeight / 2);
@@ -118,7 +119,7 @@
     var countdownTime = 30 * 1000;
 
     function gamePage() {
-
+        ctx.textAlign = 'center';
         var time = new Date().getTime();
         if (!hitted) startTime = time;
 
@@ -258,7 +259,7 @@
     var wait = 0;
     function endPage() {
         wait++;
-
+        ctx.textAlign = 'center';
         ctx.clearRect(0, 0, innerWidth, innerHeight);
         ctx.font = (Math.sin(frameCount / 60 * Math.PI * 2) * 5 + 40) + 'px 微軟正黑體';
         ctx.fillText("score", innerWidth / 2, innerHeight / 2 - 60);
