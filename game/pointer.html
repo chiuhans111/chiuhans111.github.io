@@ -14,6 +14,14 @@
 
 <script>
 
+
+    var sfx = {
+        click: new Audio('./sfx/click.wav'),
+        music: new Audio('./sfx/30s.wav'),
+        end: new Audio('./sfx/end.wav')
+    }
+
+
     var canvas = document.querySelector("canvas");
     var ctx = canvas.getContext("2d");
 
@@ -26,6 +34,7 @@
     canvas.onclick = function () {
         canvas.requestPointerLock();
         requestedPointerLock = true;
+
     }
 
     function resize() {
@@ -46,7 +55,11 @@
         ctx.fillText("點一下畫面來鎖定滑鼠", innerWidth / 2, innerHeight / 2);
         ctx.font = (Math.sin(-frameCount / 60 * Math.PI * 2) * 5 + 30) + 'px 微軟正黑體';
         ctx.fillText("CLICK THE SCREEN TO LOCK YOUR CURSOR", innerWidth / 2, innerHeight / 2 + 30);
-        if (requestedPointerLock) currentUpdater = startPage;
+
+        if (requestedPointerLock) {
+            currentUpdater = startPage;
+            sfx.click.play();
+        }
     }
 
     var currentUpdater = initPage;
@@ -88,6 +101,7 @@
         ctx.fillText("準備好之後，請點畫面開始遊戲", innerWidth / 2, innerHeight / 2);
         ctx.font = (Math.sin(-frameCount / 60 * Math.PI * 2) * 5 + 30) + 'px 微軟正黑體';
         ctx.fillText("WHEN YOU READY, CLICK THE SCREEN TO START", innerWidth / 2, innerHeight / 2 + 30);
+
         if (!pmousePressed && mousePressed) {
             X = 0;
             Y = 0;
@@ -98,7 +112,11 @@
             score = 0;
             hittime = startTime;
             hitted = false;
+            sfx.end.play();
+
+
         }
+
     }
 
     function ellipse(x, y, w, h, r = 0, s = 0, e = Math.PI * 2) {
@@ -235,9 +253,16 @@
                 var ny = Math.sin(r) * l;
                 targetX += nx;
                 targetY += ny;
+
+                if (!hitted) {
+                    sfx.music.play();
+                }
+
                 hittime = time;
                 score += ns;
                 hitted = true;
+                sfx.click.play();
+
             }
 
         }
@@ -271,6 +296,7 @@
 
             if (!pmousePressed && mousePressed) {
                 currentUpdater = startPage;
+                sfx.end.play();
             }
         }
     }
