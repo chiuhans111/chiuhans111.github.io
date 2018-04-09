@@ -143,9 +143,11 @@
     var countdownTime = 30 * 1000;
 
     function gamePage() {
+
         ctx.textAlign = 'center';
         var time = new Date().getTime();
         if (!hitted) startTime = time;
+
 
         time -= startTime;
         targetSize = (countdownTime - time) / countdownTime * 50 + 15;
@@ -153,7 +155,15 @@
             wait = 0;
             currentUpdater = endPage;
         }
+        // music sync
 
+        if (hitted) {
+            if (sfx.music.volume < 0.3) sfx.music.volume += 0.002;
+            var times = time / 1000;
+            if (Math.abs(times - sfx.music.currentTime) > 0.1) sfx.music.currentTime = times;
+        } else sfx.music.volume = 0;
+
+        // drawing
         ctx.save();
         ctx.fillStyle = '#333';
         ctx.fillRect(0, 0, innerWidth, innerHeight);
@@ -343,6 +353,8 @@
 
 
         ctx.fillStyle = '#eee';
+        if (countdownTime - time < 10000 && time % 1000 > 500) ctx.fillStyle = 'red';
+
         ctx.textBaseline = 'middle';
         ctx.font = '24px arial';
         ctx.fillText('00:' + Math.floor((countdownTime - time) / 1000), 0, innerHeight / 2 - 50)
@@ -351,9 +363,12 @@
         ctx.restore();
 
         ctx.save();
-        ctx.fillStyle = 'red'
+
+        // time bar
+        ctx.fillStyle = (countdownTime - time < 10000) ? 'red' : 'white';
         ctx.fillRect(0, innerHeight - 20, innerWidth - time / countdownTime * innerWidth, 20);
         ctx.restore();
+
 
         mx = 0;
         my = 0;
