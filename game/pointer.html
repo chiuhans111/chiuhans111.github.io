@@ -17,7 +17,7 @@
 
     var sfx = {
         click: new Audio('./sfx/click.wav'),
-        music: new Audio('./sfx/30s.wav'),
+        music: new Audio('./sfx/30s.mp3'),
         end: new Audio('./sfx/end.wav')
     }
 
@@ -112,6 +112,7 @@
             score = 0;
             hittime = startTime;
             hitted = false;
+
             sfx.end.play();
 
 
@@ -255,12 +256,15 @@
                 targetY += ny;
 
                 if (!hitted) {
+                    sfx.music.currentTime = 0;
                     sfx.music.play();
                 }
 
                 hittime = time;
                 score += ns;
                 hitted = true;
+
+                sfx.click.currentTime = 0;
                 sfx.click.play();
 
             }
