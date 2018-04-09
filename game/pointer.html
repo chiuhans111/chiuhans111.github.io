@@ -103,6 +103,8 @@
         ctx.fillText("WHEN YOU READY, CLICK THE SCREEN TO START", innerWidth / 2, innerHeight / 2 + 30);
 
         if (!pmousePressed && mousePressed) {
+
+            // init game
             X = 0;
             Y = 0;
             targetX = 0;
@@ -112,6 +114,7 @@
             score = 0;
             hittime = startTime;
             hitted = false;
+            toast = [];
 
             sfx.end.play();
 
@@ -125,6 +128,7 @@
         ctx.ellipse(x, y, w, h, r, s, e);
     }
 
+    // game variables
     var startTime = 0;
     var targetX = 0;
     var targetY = 0;
@@ -134,6 +138,7 @@
     var score = 0;
     var hittime = 0;
     var hitted = false;
+    var toast = [];
 
     var countdownTime = 30 * 1000;
 
@@ -176,16 +181,16 @@
         ctx.save();
 
         // background
-        ctx.save();
-        ctx.fillStyle = '#eee';
-        ctx.textBaseline = 'middle';
-        ctx.font = '24px arial';
-        ctx.fillText(Math.floor((countdownTime - time) / 1000), 0, 100)
 
-        ctx.restore();
 
 
         // target
+        var dx = X - targetX;
+        var dy = Y - targetY;
+        var dd = dx * dx + dy * dy;
+        var d = Math.sqrt(dd);
+
+
         var hittimeTilNow = time - hittime;
         var ns = Math.round(1000000 / targetSize / (hittimeTilNow + 1000)) * 10;
 
@@ -195,13 +200,38 @@
 
         ctx.fill();
         ctx.fillStyle = 'white';
-        ctx.fillText(hitted ? ns : 'CLICK', targetX, targetY - targetSize * 2);
+        ctx.textBaseline = 'middle';
+        if (!hitted) ctx.fillText('CLICK', targetX, targetY);
 
-        ctx.moveTo(targetX, targetY);
+
+        // toste
+
+        ctx.save();
+        toast = toast.filter(x => x.life > 0);
+        toast.map(x => {
+            var size = x.size || 24;
+
+            ctx.fillStyle = x.color || 'white';
+            ctx.font = size + 'px arial';
+            ctx.fillText(x.text, x.x, x.y + x.life * x.life / 100);
+
+            x.life--;
+        })
         ctx.restore();
 
-        ctx.lineTo(0, 0);
-        ctx.stroke();
+
+        // guide line
+        if (d > innerHeight || d > innerWidth) {
+
+            ctx.moveTo(targetX, targetY);
+            ctx.restore();
+            ctx.lineTo(0, 0);
+            ctx.stroke();
+        } else ctx.restore();
+
+
+
+
 
 
         // cursor
@@ -235,10 +265,7 @@
         ctx.strokeStyle = 'red';
         ctx.lineWidth = 2;
 
-        var dx = X - targetX;
-        var dy = Y - targetY;
-        var dd = dx * dx + dy * dy;
-        var d = Math.sqrt(dd);
+
 
 
         if (d < targetSize) {
@@ -249,9 +276,40 @@
             if (!pmousePressed && mousePressed) {
 
                 var r = Math.random() * Math.PI * 2;
-                var l = Math.random() * 200 + 100 + targetSize * 3;
+                var l = Math.random() * 100 + 150 + targetSize * 3;
                 var nx = Math.cos(r) * l;
                 var ny = Math.sin(r) * l;
+
+
+                var guides = 5;
+                for (var i = 0; i < guides; i++) {
+                    (function () {
+
+                        var t = {
+                            text: '◆',
+                            color: 'white',
+                            x: targetX + nx * i / guides,
+                            y: targetY + ny * i / guides,
+                            life: 30,
+                            size: i * 2 + 5
+                        }
+                        setTimeout(() => {
+                            toast.push(t)
+                        }, 500 / guides * i);
+                    })();
+
+                }
+
+
+                toast.push({
+                    text: '+' + ns,
+                    color: hittimeTilNow < 500 ? 'yellow' :
+                        hittimeTilNow < 750 ? 'lightgreen' : 'lightgray',
+                    x: targetX,
+                    y: targetY,
+                    life: 80
+                })
+
                 targetX += nx;
                 targetY += ny;
 
@@ -264,6 +322,8 @@
                 score += ns;
                 hitted = true;
 
+
+
                 sfx.click.currentTime = 0;
                 sfx.click.play();
 
@@ -274,12 +334,23 @@
 
         var sizeadd = Math.sqrt(d);
 
-        ellipse(0, 0, targetSize + sizeadd, targetSize + sizeadd);
+        //ellipse(0, 0, targetSize + sizeadd, targetSize + sizeadd);
         ctx.stroke();
 
 
+        ctx.fillStyle = '#eee';
+        ctx.textBaseline = 'middle';
+        ctx.font = '24px arial';
+        ctx.fillText('00:' + Math.floor((countdownTime - time) / 1000), 0, innerHeight / 4)
+
 
         ctx.restore();
+
+        ctx.save();
+        ctx.fillStyle = 'red'
+        ctx.fillRect(0, innerHeight - 20, innerWidth - time / countdownTime * innerWidth, 20);
+        ctx.restore();
+
         mx = 0;
         my = 0;
 
@@ -291,7 +362,7 @@
         ctx.textAlign = 'center';
         ctx.clearRect(0, 0, innerWidth, innerHeight);
         ctx.font = (Math.sin(frameCount / 60 * Math.PI * 2) * 5 + 40) + 'px 微軟正黑體';
-        ctx.fillText("score", innerWidth / 2, innerHeight / 2 - 60);
+        ctx.fillText("SCORE", innerWidth / 2, innerHeight / 2 - 60);
         ctx.font = (Math.sin(-frameCount / 60 * Math.PI * 2) * 5 + 60) + 'px 微軟正黑體';
         ctx.fillText(score, innerWidth / 2, innerHeight / 2 + 30);
         if (wait > 100) {
