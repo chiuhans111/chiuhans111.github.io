@@ -236,13 +236,16 @@
 
         // cursor
 
+        ctx.strokeStyle = 'white';
+        ctx.fillStyle = 'white';
+
         var mm = mx * mx + my * my;
         var m = Math.sqrt(mm);
 
 
 
-        if (m > 0) cursorSize += (20 - cursorSize) * 0.2;
-        else cursorSize += (5 - cursorSize) * 0.1;
+        if (m > 1) cursorSize += (40 - cursorSize) * 0.2;
+        else cursorSize += (20 - cursorSize) * 0.1;
 
         ctx.beginPath();
         ctx.strokeStyle = 'white';
@@ -258,19 +261,20 @@
         ctx.stroke();
 
         ctx.fillStyle = 'white';
+
         ctx.fillRect(-1.5, -1.5, 3, 3);
 
         // circle
 
-        ctx.strokeStyle = 'red';
+        ctx.strokeStyle = 'white';
         ctx.lineWidth = 2;
 
 
 
 
         if (d < targetSize) {
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = 'green';
+            cursorSize += (1 - cursorSize) * 0.4;
+            ctx.strokeStyle = 'red';
             sizeadd = 0;
 
             if (!pmousePressed && mousePressed) {
