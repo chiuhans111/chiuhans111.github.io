@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>How Fast</title>
+</head>
+
+<body style="margin:0; padding:0; overflow:hidden">
+    <canvas style="width:100%; height:100%"> </canvas>
+</body>
+
+<script>
+
+
+    var sfx = {
+        click: new Audio('./sfx/click.wav'),
+        music: new Audio('./sfx/30s.mp3'),
+        end: new Audio('./sfx/end.wav')
+    }
+
+
+    var canvas = document.querySelector("canvas");
+    var ctx = canvas.getContext("2d");
+
+    if (!(typeof canvas.requestPointerLock == 'function')) {
+        alert('你的瀏覽器不支援');
+    }
+
+    var requestedPointerLock = false;
+
+    canvas.onclick = function () {
+        canvas.requestPointerLock();
+        requestedPointerLock = true;
+
+    }
+
+    function resize() {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+    }
+
+    resize();
+    addEventListener('resize', resize);
+
+    var X = 0, Y = 0;
+    var frameCount = 0;
+    // updater
+    function initPage() {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        ctx.textAlign = 'center';
+        ctx.font = (Math.sin(frameCount / 60 * Math.PI * 2) * 5 + 60) + 'px 微軟正黑體';
+        ctx.fillText("點一下畫面來鎖定滑鼠", innerWidth / 2, innerHeight / 2);
+        ctx.font = (Math.sin(-frameCount / 60 * Math.PI * 2) * 5 + 30) + 'px 微軟正黑體';
+        ctx.fillText("CLICK THE SCREEN TO LOCK YOUR CURSOR", innerWidth / 2, innerHeight / 2 + 30);
+
+        if (requestedPointerLock) {
+            currentUpdater = startPage;
+            sfx.click.play();
+        }
+    }
+
+    var currentUpdater = initPage;
+
+
+    function update() {
+        frameCount = (frameCount + 1) % 12000;
+        currentUpdater();
+        pmousePressed = mousePressed;
+        requestAnimationFrame(update);
+    }
+
+    update();
+
+
+    var mousePressed = false;
+    var pmousePressed = false;
+    addEventListener('mousedown', function () {
+        mousePressed = true;
+    })
+
+    addEventListener('mouseup', function () {
+        mousePressed = false;
+    })
+
+
+    var mx, my;
+    addEventListener('mousemove', event => {
+        X += event.movementX;
+        Y += event.movementY;
+        mx = event.movementX;
+        my = event.movementY;
+    })
+
+    function startPage() {
+        ctx.textAlign = 'center';
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        ctx.font = (Math.sin(frameCount / 60 * Math.PI * 2) * 5 + 60) + 'px 微軟正黑體';
+        ctx.fillText("準備好之後，請點畫面開始遊戲", innerWidth / 2, innerHeight / 2);
+        ctx.font = (Math.sin(-frameCount / 60 * Math.PI * 2) * 5 + 30) + 'px 微軟正黑體';
+        ctx.fillText("WHEN YOU READY, CLICK THE SCREEN TO START", innerWidth / 2, innerHeight / 2 + 30);
+
+        if (!pmousePressed && mousePressed) {
+
+            // init game
+            X = 0;
+            Y = 0;
+            targetX = 0;
+            targetY = 0;
+            currentUpdater = gamePage;
+            startTime = new Date().getTime();
+            score = 0;
+            hittime = startTime;
+            hitted = false;
+            toast = [];
+
+            sfx.end.play();
+
+
+        }
+
+    }
+
+    function ellipse(x, y, w, h, r = 0, s = 0, e = Math.PI * 2) {
+        ctx.beginPath();
+        ctx.ellipse(x, y, w, h, r, s, e);
+    }
+
+    // game variables
+    var startTime = 0;
+    var targetX = 0;
+    var targetY = 0;
+    var gridSize = 100;
+    var targetSize = 50;
+    var cursorSize = 10;
+    var score = 0;
+    var hittime = 0;
+    var hitted = false;
+    var toast = [];
+
+    var countdownTime = 30 * 1000;
+
+    function gamePage() {
+
+        ctx.textAlign = 'center';
+        var time = new Date().getTime();
+        if (!hitted) startTime = time;
+
+
+        time -= startTime;
+        targetSize = (countdownTime - time) / countdownTime * 50 + 15;
+        if (time > countdownTime) {
+            wait = 0;
+            currentUpdater = endPage;
+        }
+        // music sync
+
+        if (hitted) {
+            if (sfx.music.volume < 0.3) sfx.music.volume += 0.002;
+            var times = time / 1000;
+            if (Math.abs(times - sfx.music.currentTime) > 0.1) sfx.music.currentTime = times;
+        } else sfx.music.volume = 0;
+
+        // drawing
+        ctx.save();
+        ctx.fillStyle = '#333';
+        ctx.fillRect(0, 0, innerWidth, innerHeight);
+        ctx.restore();
+        ctx.save();
+
+        var ox = X % gridSize;
+        ctx.strokeStyle = '#111';
+        for (var i = -1; i < innerWidth / gridSize + 1; i++) {
+            var x = i * gridSize - ox;
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, innerHeight);
+            ctx.stroke();
+        }
+        var oy = Y % gridSize;
+        for (var i = -1; i < innerHeight / gridSize + 1; i++) {
+            var y = i * gridSize - oy;
+            ctx.moveTo(0, y);
+            ctx.lineTo(innerWidth, y);
+            ctx.stroke();
+        }
+
+        ctx.strokeStyle = 'darkgray';
+        ctx.translate(innerWidth / 2, innerHeight / 2);
+        ctx.save();
+
+        // background
+
+
+
+        // target
+        var dx = X - targetX;
+        var dy = Y - targetY;
+        var dd = dx * dx + dy * dy;
+        var d = Math.sqrt(dd);
+
+
+        var hittimeTilNow = time - hittime;
+        var ns = Math.round(1000000 / targetSize / (hittimeTilNow + 1000)) * 10;
+
+        ctx.fillStyle = 'orange'
+        ctx.translate(-X, -Y);
+        ellipse(targetX, targetY, targetSize, targetSize);
+
+        ctx.fill();
+        ctx.fillStyle = 'white';
+        ctx.textBaseline = 'middle';
+        if (!hitted) ctx.fillText('CLICK', targetX, targetY);
+
+
+        // toste
+
+        ctx.save();
+        toast = toast.filter(x => x.life > 0);
+        toast.map(x => {
+            var size = x.size || 24;
+
+            ctx.fillStyle = x.color || 'white';
+            ctx.font = size + 'px arial';
+            ctx.fillText(x.text, x.x, x.y + x.life * x.life / 100);
+
+            x.life--;
+        })
+        ctx.restore();
+
+
+        // guide line
+        if (d > innerHeight || d > innerWidth) {
+
+            ctx.moveTo(targetX, targetY);
+            ctx.restore();
+            ctx.lineTo(0, 0);
+            ctx.stroke();
+        } else ctx.restore();
+
+
+
+
+
+
+        // cursor
+
+        ctx.strokeStyle = 'white';
+        ctx.fillStyle = 'white';
+
+        var mm = mx * mx + my * my;
+        var m = Math.sqrt(mm);
+
+
+
+        if (m > 1) cursorSize += (40 - cursorSize) * 0.2;
+        else cursorSize += (20 - cursorSize) * 0.1;
+
+        ctx.beginPath();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.moveTo(cursorSize, 0);
+        ctx.lineTo(cursorSize + 10, 0);
+        ctx.moveTo(-cursorSize, 0);
+        ctx.lineTo(-cursorSize - 10, 0);
+        ctx.moveTo(0, cursorSize);
+        ctx.lineTo(0, cursorSize + 10);
+        ctx.moveTo(0, -cursorSize);
+        ctx.lineTo(0, -cursorSize - 10);
+        ctx.stroke();
+
+        ctx.fillStyle = 'white';
+
+        ctx.fillRect(-1.5, -1.5, 3, 3);
+
+        // circle
+
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+
+
+
+
+        if (d < targetSize) {
+            cursorSize += (1 - cursorSize) * 0.4;
+            ctx.strokeStyle = 'red';
+            sizeadd = 0;
+
+            if (!pmousePressed && mousePressed) {
+
+                var r = Math.random() * Math.PI * 2;
+                var l = Math.random() * 100 + 150 + targetSize * 3;
+                var nx = Math.cos(r) * l;
+                var ny = Math.sin(r) * l;
+
+
+                var guides = 5;
+                for (var i = 0; i < guides; i++) {
+                    (function () {
+
+                        var t = {
+                            text: '◆',
+                            color: 'white',
+                            x: targetX + nx * i / guides,
+                            y: targetY + ny * i / guides,
+                            life: 30,
+                            size: i * 2 + 5
+                        }
+                        setTimeout(() => {
+                            toast.push(t)
+                        }, 500 / guides * i);
+                    })();
+
+                }
+
+
+                toast.push({
+                    text: '+' + ns,
+                    color: hittimeTilNow < 500 ? 'yellow' :
+                        hittimeTilNow < 750 ? 'lightgreen' : 'lightgray',
+                    x: targetX,
+                    y: targetY,
+                    life: 80
+                })
+
+                targetX += nx;
+                targetY += ny;
+
+                if (!hitted) {
+                    sfx.music.currentTime = 0;
+                    sfx.music.play();
+                }
+
+                hittime = time;
+                score += ns;
+                hitted = true;
+
+
+
+                sfx.click.currentTime = 0;
+                sfx.click.play();
+
+            }
+
+        }
+
+
+        var sizeadd = Math.sqrt(d);
+
+        //ellipse(0, 0, targetSize + sizeadd, targetSize + sizeadd);
+        ctx.stroke();
+
+
+        ctx.fillStyle = '#eee';
+        if (countdownTime - time < 10000 && time % 1000 > 500) ctx.fillStyle = 'red';
+
+        ctx.textBaseline = 'middle';
+        ctx.font = '24px arial';
+        ctx.fillText('00:' + Math.floor((countdownTime - time) / 1000), 0, innerHeight / 2 - 50)
+
+
+        ctx.restore();
+
+        ctx.save();
+
+        // time bar
+        ctx.fillStyle = (countdownTime - time < 10000) ? 'red' : 'white';
+        ctx.fillRect(0, innerHeight - 20, innerWidth - time / countdownTime * innerWidth, 20);
+        ctx.restore();
+
+
+        mx = 0;
+        my = 0;
+
+    }
+
+    var wait = 0;
+    function endPage() {
+        wait++;
+        ctx.textAlign = 'center';
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        ctx.font = (Math.sin(frameCount / 60 * Math.PI * 2) * 5 + 40) + 'px 微軟正黑體';
+        ctx.fillText("SCORE", innerWidth / 2, innerHeight / 2 - 60);
+        ctx.font = (Math.sin(-frameCount / 60 * Math.PI * 2) * 5 + 60) + 'px 微軟正黑體';
+        ctx.fillText(score, innerWidth / 2, innerHeight / 2 + 30);
+        if (wait > 100) {
+            ctx.font = (Math.sin(frameCount / 60 * Math.PI * 2) * 5 + 30) + 'px 微軟正黑體';
+            ctx.fillText("點螢幕繼續\nCLICK TO CONTINUE", innerWidth / 2, innerHeight / 2 + 100);
+
+            if (!pmousePressed && mousePressed) {
+                currentUpdater = startPage;
+                sfx.end.play();
+            }
+        }
+    }
+
+
+
+</script>
+
+
+</html>
