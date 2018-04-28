@@ -13,6 +13,7 @@
     <button>run</button>
     <p id='output'></p>
     <textarea id="input" cols="30" rows="10"></textarea>
+    <p id='other'></p>
 
 </body>
 <script>
@@ -20,19 +21,33 @@
     var run = document.querySelector('button');
     var input = document.getElementById('input');
     var output = document.getElementById('output');
-
+    var other = document.getElementById('other');
+    var all = null;
+    var more = [];
     run.onclick = function () {
         var text = input.value;
         var lines = text.split('\n');
         var dict = {};
         var result = '';
+        var history = [];
         for (var line of lines) {
             if (line.length < result.length) continue;
             dict[line] = true;
             var reversed = [...line].reverse().join('');
             if (dict[reversed]) result = reversed;
+            history.unshift(reversed);
         }
-        output.innerText = result;
+        output.innerText = 'longest: ' + result;
+        other.innerText = 'other: ' + history.slice(0, 100).join(', ');
+        more = history.slice(100);
+        all = history;
+        if (more.length > 0) {
+            other.innerHTML += ` ... <a href='#' onClick='showMore()'>show all ${more.length} more words </a> ...`
+        }
+    }
+
+    function showMore() {
+        other.innerHTML = all.join(', ');
     }
 
 </script>
