@@ -34,8 +34,10 @@
             if (line.length < result.length) continue;
             dict[line] = true;
             var reversed = [...line].reverse().join('');
-            if (dict[reversed]) result = reversed;
-            history.unshift(reversed);
+            if (dict[reversed]) {
+                result = reversed;
+                history.unshift(reversed);
+            }
         }
         output.innerText = 'longest: ' + result;
         other.innerText = 'other: ' + history.slice(0, 100).join(', ');
