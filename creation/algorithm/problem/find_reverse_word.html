@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Hello, world!</title>
+</head>
+
+<body>
+    <h1>input here</h1>
+    <button>run</button>
+    <p id='output'></p>
+    <textarea id="input" cols="30" rows="10"></textarea>
+
+</body>
+<script>
+
+    var run = document.querySelector('button');
+    var input = document.getElementById('input');
+    var output = document.getElementById('output');
+
+    run.onclick = function () {
+        var text = input.value;
+        var lines = text.split('\n');
+        var dict = {};
+        var result = '';
+        for (var line of lines) {
+            if (line.length < result.length) continue;
+            dict[line] = true;
+            var reversed = [...line].reverse().join('');
+            if (dict[reversed]) result = reversed;
+        }
+        output.innerText = result;
+    }
+
+</script>
+
+</html>
