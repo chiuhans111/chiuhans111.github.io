@@ -13,8 +13,10 @@
     <button>run</button>
     <p id='output'></p>
     <textarea id="input" cols="30" rows="10"></textarea>
+    <p> ignore case sensitivity
+        <input type="checkbox" name="caps" id="caps" checked>
+    </p>
     <p id='other'></p>
-
 </body>
 <script>
 
@@ -22,6 +24,7 @@
     var input = document.getElementById('input');
     var output = document.getElementById('output');
     var other = document.getElementById('other');
+    var caps = document.getElementById('caps');
     var all = null;
     var more = [];
     run.onclick = function () {
@@ -32,15 +35,20 @@
         var history = [];
         for (var line of lines) {
             if (line.length < result.length) continue;
-            dict[line] = true;
-            var reversed = [...line].reverse().join('');
-            if (dict[reversed]) {
-                result = reversed;
-                history.unshift(reversed);
+
+            var key = line;
+            if (caps.checked) key = key.toLowerCase();
+            if (dict[key]) continue;
+
+            dict[key] = line;
+            var reversed = [...key].reverse().join('');
+            if (typeof dict[reversed] == 'string') {
+                result = dict[reversed];
+                history.unshift(dict[reversed]);
             }
         }
         output.innerText = 'longest: ' + result;
-        other.innerText = 'other: ' + history.slice(0, 100).join(', ');
+        other.innerText = 'ALL: ' + history.slice(0, 100).join(', ');
         more = history.slice(100);
         all = history;
         if (more.length > 0) {
