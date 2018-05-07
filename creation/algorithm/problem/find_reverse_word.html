@@ -34,7 +34,7 @@
         var result = '';
         var history = [];
         for (var line of lines) {
-            if (line.length < result.length) continue;
+            if (line.length <= result.length) continue;
 
             var key = line;
             if (caps.checked) key = key.toLowerCase();
