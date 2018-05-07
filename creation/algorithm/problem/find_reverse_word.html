@@ -34,7 +34,7 @@
         var result = '';
         var history = [];
         for (var line of lines) {
-            if (line.length <= result.length) continue;
+            if (line.length < result.length) continue;
 
             var key = line;
             if (caps.checked) key = key.toLowerCase();
@@ -43,7 +43,8 @@
             dict[key] = line;
             var reversed = [...key].reverse().join('');
             if (typeof dict[reversed] == 'string') {
-                result = dict[reversed];
+                if (line.length > result.length)
+                    result = dict[reversed];
                 history.unshift(dict[reversed]);
             }
         }
