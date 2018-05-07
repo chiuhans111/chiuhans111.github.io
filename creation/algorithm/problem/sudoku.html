@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SUDOKU SOLVER</title>
+</head>
+<style>
+  body {
+    margin: 56px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  table,
+  td {
+    border-collapse: collapse;
+    border: solid 1px gray;
+    padding: 4px;
+    table-layout: fixed;
+    vertical-align: middle;
+    text-align: center;
+  }
+
+  td {
+    width: 52px;
+    height: 52px;
+  }
+
+  td:nth-child(1),
+  td:nth-child(4),
+  td:nth-child(7) {
+    border-left: solid black;
+  }
+
+  td:nth-child(9) {
+    border-right: solid black;
+  }
+
+  tr:nth-child(1),
+  tr:nth-child(4),
+  tr:nth-child(7) {
+    border-top: solid black;
+  }
+
+  tr:nth-child(9) {
+    border-bottom: solid black;
+  }
+
+  .answer {
+    font-size: 2em;
+    color: green;
+  }
+
+  .original {
+    color: white;
+    background-color: #212121;
+  }
+</style>
+
+<body>
+  <h1>SUDOKU SOLVER</h1>
+  <h3>input</h3>
+  <textarea name="" cols="18" rows="9" id="input"></textarea>
+  <span>1~9 for number, 0 or n for blanks</span>
+  <p>solving speed ( in millisecond )</p>
+  <input type="text" id="speed" value="0">
+  <button onclick="solve()">solve</button>
+  <table id="output"></table>
+</body>
+<script>
+
+
+  var example = [
+    'n n n 8 n 1 n n n',
+    'n n n n n n 4 3 n',
+    '5 n n n n n n n n',
+    'n n n n 7 n 8 n n',
+    'n n n n n n 1 n n',
+    'n 2 n n 3 n n n n',
+    '6 n n n n n n 7 5',
+    'n n 3 4 n n n n n',
+    'n n n 2 n n 6 n n'].join('\n')
+
+  var input = document.querySelector('#input')
+  var speed = document.querySelector('#speed')
+  if (input.value == '') input.value = example
+
+  // same number = same group
+  var groups = [
+    [
+      '111111111',
+      '222222222',
+      '333333333',
+      '444444444',
+      '555555555',
+      '666666666',
+      '777777777',
+      '888888888',
+      '999999999',
+    ],
+    [
+      '123456789',
+      '123456789',
+      '123456789',
+      '123456789',
+      '123456789',
+      '123456789',
+      '123456789',
+      '123456789',
+      '123456789',
+    ],
+    [
+      '111222333',
+      '111222333',
+      '111222333',
+      '444555666',
+      '444555666',
+      '444555666',
+      '777888999',
+      '777888999',
+      '777888999',
+    ]
+  ].map(group => new Int8Array([...group.join('')].map(x => +x)))
+
+  var ngroups = groups.map(group => {
+    var g = {}
+    for (var i in group) {
+      var gid = group[i]
+      if (g[gid] == null) g[gid] = []
+      g[gid].push(i)
+    }
+    for (var i in g) g[i] = new Int8Array(g[i])
+    return g
+  })
+
+  function allNumb() {
+    return new Int8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+  }
+
+
+  function clone(data, p) {
+    var ndata = new Int8Array(data)
+    var np = p.map(x => new Int8Array(x))
+    return [ndata, np]
+  }
+
+
+  function possibility(data, p) {
+    // store all possibles
+    if (p == null) p = [...data].map(allNumb)
+    for (var i in data) if (data[i] != 0) p[i] = []
+
+    // basic group Elimination method
+
+    for (var group of groups) {
+
+      var g = {}
+
+      for (var i in data) {
+        var gid = group[i]
+        if (g[gid] == null) g[gid] = {}
+        g[gid][data[i]] = true
+      }
+
+      for (var i in p) {
+        var gid = group[i]
+        p[i] = p[i].filter(x => !g[gid][x])
+      }
+    }
+
+    return p
+  }
+
+  function fastupdate(data, p, i, n) {
+
+    data[i] = n
+    var f = x => x != n
+    if (p[i].every(f)) return false
+    p[i] = []
+
+    var places = {}
+    for (var j in groups) {
+      var gid = groups[j][i]
+      for (var k of ngroups[j][gid]) places[k] = true
+    }
+    for (var k in places) {
+      p[k] = p[k].filter(f)
+      if (p[k].length == 0 && data[k] == 0) return false
+    }
+    k = null
+    f = null
+    return true;
+  }
+
+  var methods = {}
+
+  function method_start(name) {
+    methods[name] = []
+  }
+
+  function method_update(name, id) {
+    methods[name].push(id)
+  }
+
+  function method_end(name) {
+    var result = methods[name]
+    var output = `updated ${result.length} cells : ${name}`
+    //console.log(output)
+    return result
+  }
+
+  function m_naked_singles(data, p) {
+    method_start('naked singles')
+    for (var i in p) {
+      if (p[i].length == 1) {
+        if (fastupdate(data, p, i, p[i][0]) === false) return NaN
+        method_update('naked singles', i)
+      }
+    }
+
+
+    return method_end('naked singles').length
+  }
+
+  function m_hidden_singles(data, p) {
+    method_start('hidden singles')
+
+    for (var gg in groups) {
+      var group = groups[gg]
+
+      var g = {}
+      for (var i in ngroups[gg]) {
+        g[i] = {}
+        for (var j = 1; j <= 9; j++) g[i][j] = []
+      }
+
+      for (var i in p) {
+        var gid = group[i]
+        if (data[i]) g[gid][data[i]] = -1
+        for (var j of p[i]) {
+          if (g[gid][j] == -1) return NaN
+          g[gid][j].push(i)
+        }
+      }
+      for (var i in g) {
+        var gs = g[i]
+        for (var n in gs) if (gs[n] != -1 && gs[n].length == 0) {
+          return NaN
+        }
+        for (var n in gs) {
+          if (gs[n].length == 1) {
+            if (fastupdate(data, p, gs[n][0], n) === false) return NaN
+            method_update('hidden singles', gs[n][0])
+          }
+        }
+      }
+    }
+
+
+    return method_end('hidden singles').length
+  }
+
+
+  function m_grouping(data, p) {
+    for (var n = 1; n <= 9; n++) {
+      for (GA in groups) {
+
+        var PIA = {}
+        for (var i in p) {
+          if (!p[i].some(x => x == n)) continue
+          var gid = groups[GA][i]
+          if (PIA[gid] == null) PIA[gid] = []
+          PIA[gid].push(i)
+        }
+
+        for (var i in PIA) {
+
+          var places = PIA[i]
+          for (GB in groups) {
+            if (GB == GA) continue
+            if (GB != 2 && GA != 2) continue
+            var pre = null
+            for (var pp of places) {
+              var gid = groups[GB][pp]
+              if (pre == null) pre = gid
+              else if (pre != gid) {
+                pre = false
+                break
+              }
+            }
+            if (pre !== false) {
+
+              for (var x of ngroups[GB][pre]) {
+                if (groups[GA][x] == i) continue
+                p[x] = p[x].filter(x => x != n)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function get_hash(data) {
+    return data.join('')
+  }
+
+  function check(data) {
+    return data.every(x => x != 0)
+  }
+
+  function* m_brute_froce(data, p) {
+
+    var stack = []
+    var hashtable = {}
+
+    stack.push([data, p])
+
+    while (stack.length) {
+      [ndata, np] = stack.pop()
+
+      if (isNaN(m_naked_singles(ndata, np))) continue
+      if (isNaN(m_hidden_singles(ndata, np))) continue
+
+      yield [ndata, np]
+      var hash = get_hash(ndata)
+      if (check(ndata)) {
+        return ndata
+      }
+      if (hashtable[hash]) continue
+      hashtable[hash] = true
+
+
+      m_grouping(ndata, np)
+
+
+
+      var npl = np.map((p, i) => ({
+        p, i
+      }))
+
+      npl = npl.filter(x => x.p.length > 0)
+        .sort((a, b) => a.p.length - b.p.length + Math.random() - 0.5)
+
+      for (var x in npl) {
+        var i = npl[x].i
+        var p = npl[x].p
+        for (var n of p) {
+          var [nndata, nnp] = clone(ndata, np)
+          if (fastupdate(nndata, nnp, i, n) === false) continue
+          stack.push([nndata, nnp])
+        }
+      }
+    }
+
+
+
+
+  }
+
+  var table = document.querySelector('#output')
+
+  function solve() {
+    // parse input
+    var data = new Int8Array(
+      [...input.value.replace(/\s|\n/g, '')]
+        .map(x => +x))
+
+    var original = new Int8Array(data)
+
+    var p = possibility(data)
+
+    var start = performance.now()
+
+
+    var n = 0, s = 0
+    while (n = m_naked_singles(data, p)) s += n
+    while (n = m_hidden_singles(data, p)) s += n
+    s += n
+    if (isNaN(s)) {
+      prettyPrint([], 'this is impossible to solve'.split(' '), table)
+      return
+    }
+
+
+
+    prettyPrint(data, p, table, original)
+
+    var brute_forcer = m_brute_froce(data, p)
+    async_generate(brute_forcer,
+      function ([data, p]) {
+        prettyPrint(data, p, table, original)
+        //console.log(data.join(' '))
+      }, function (data) {
+        prettyPrint(data, p, table, original)
+        console.log('done')
+        var end = performance.now()
+        console.log('took', end - start, 'millisecond')
+      }, +speed.value)
+
+
+  }
+
+  function async_generate(generator, onYield, onReturn, interval = 0) {
+    var result = generator.next()
+    if (result.done) onReturn(result.value)
+    else {
+      onYield(result.value)
+      setTimeout(() => {
+        async_generate(generator, onYield, onReturn, interval)
+      }, interval);
+    }
+  }
+
+
+
+
+  function prettyPrint(data, p, table = null, original = null) {
+
+    if (table == null)
+      table = document.createElement('table')
+    else table.innerHTML = ''
+    for (var g in ngroups[0]) {
+      var group = ngroups[0][g]
+      var tr = document.createElement('tr')
+      table.appendChild(tr)
+      for (var i of group) {
+        var td = document.createElement('td')
+        tr.appendChild(td)
+        if (data[i] != null && data[i] != 0) {
+          td.textContent = data[i]
+          td.classList.add('answer')
+          if (original) if (original[i] != null && original[i] != 0) td.classList.add('original')
+        }
+        else if (p[i] != null && p[i].length > 0) td.textContent = p[i]
+      }
+    }
+    document.body.appendChild(table)
+    return table
+  }
+</script>
+
+</html>
