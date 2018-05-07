@@ -324,6 +324,9 @@
     while (stack.length) {
       [ndata, np] = stack.pop()
 
+      if (isNaN(m_naked_singles(ndata, np))) continue
+      if (isNaN(m_hidden_singles(ndata, np))) continue
+
       yield [ndata, np]
       var hash = get_hash(ndata)
       if (check(ndata)) {
@@ -332,12 +335,9 @@
       if (hashtable[hash]) continue
       hashtable[hash] = true
 
-      var error = false
-
 
       m_grouping(ndata, np)
-      if (isNaN(m_hidden_singles(ndata, np))) continue
-      if (isNaN(m_naked_singles(ndata, np))) continue
+
 
 
       var npl = np.map((p, i) => ({
