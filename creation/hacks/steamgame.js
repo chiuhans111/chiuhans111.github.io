@@ -1,6 +1,7 @@
 "use strict";
 
 // auto kill
+/*
 CEnemy.prototype.Walk = function () {
     (function (instance) {
         instance.Damage(instance.m_nHealth - 1)
@@ -12,7 +13,9 @@ CEnemy.prototype.Walk = function () {
     this.m_Sprite.onComplete = null;
     this.m_bMoving = true;
 };
+*/
 
+CEnemyManager.prototype.BuildEnemy = function(){};
 
 CBattleState.prototype.RenderVictoryScreen = function (result) {
     window.G_instance = this;
