@@ -22,6 +22,17 @@ CBattleState.prototype.RenderVictoryScreen = function (result) {
         this.m_Score,
         function (results) {
             console.log('report score result', results)
+            var result = results.response
+            
+            var sps = (result.new_score - result.old_score) / (1000*60*2)
+            var tre = (result.next_level_score - result.new_score) / sps
+
+            console.log('Time till level', result.new_level+1);
+            console.log(`${Math.floor(tre/1000/60/60)} Hour ${Math.floor(tre/1000/60%60)} Min ${Math.floor(tre/1000%60)} Sec`);
+            console.log(`${sps} score / second`);
+            
+            
+
             gServer.GetPlayerInfo(function (results) {
                 gPlayerInfo = results.response;
                 gGame.ChangeState(new CBattleSelectionState(window.G_instance.m_PlanetData.id));
@@ -44,7 +55,7 @@ CBattleSelect.prototype.SetTile = function (tileX, tileY, tileInfo) {
     //console.log(tileInfo)
 
     if (tileX == 1 && tileY == 1) {
-        console.log('start set tile')
+        // console.log('start set tile')
         max = 0;
         maxx = 1;
         maxy = 1;
@@ -62,7 +73,7 @@ CBattleSelect.prototype.SetTile = function (tileX, tileY, tileInfo) {
 
 
     if (tileX == k_NumMapTilesW - 1 && tileY == 7) {
-        console.log('tile set done')
+        // console.log('tile set done')
     }
 
 
