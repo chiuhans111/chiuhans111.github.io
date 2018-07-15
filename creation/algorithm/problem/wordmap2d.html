@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <h3>dictionary</h3>
+    <textarea name="" id="dict" cols="30" rows="10"></textarea>
+    <h3>map</h3>
+    <textarea name="" id="map" cols="8" rows="4"></textarea>
+    <button id="solve">solve</button>
+    <div id="output">
+
+    </div>
+</body>
+
+<script>
+    let ge = document.getElementById.bind(document)
+    var e_dict = ge('dict')
+    var e_map = ge('map')
+    var e_solve = ge('solve')
+    var e_output = ge('output')
+
+
+    function find(word, p, map, x, y, walked = {}) {
+        walked = Object.assign({}, walked)
+        var line = map[y]
+        if (line == null) return false
+        var c = line[x]
+        if (c == null) return false
+        if (p >= word.length) return true
+        var hash = `${x},${y}`
+        if (walked[hash]) return false
+        walked[hash] = true
+        if (word[p] == c) {
+            return find(word, p + 1, map, x + 1, y, walked)
+                || find(word, p + 1, map, x, y + 1, walked)
+                || find(word, p + 1, map, x - 1, y, walked)
+                || find(word, p + 1, map, x, y - 1, walked)
+                || find(word, p + 1, map, x + 1, y + 1, walked)
+                || find(word, p + 1, map, x + 1, y - 1, walked)
+                || find(word, p + 1, map, x - 1, y + 1, walked)
+                || find(word, p + 1, map, x - 1, y - 1, walked)
+        } else return false
+    }
+
+    e_solve.onclick = function () {
+        var map = e_map.value.split('\n').map(x => x.trim()).map(x => [...x])
+        var dict = e_dict.value.split('\n')
+        var result = dict.filter(word => {
+            for (var y in map) {
+                for (var x in map[y])
+                    if (find(word, 0, map, +x, +y)) return true
+            }
+            return false
+        })
+        e_output.innerHTML = result.join(', ')
+    }
+
+</script>
+
+
+</html>
