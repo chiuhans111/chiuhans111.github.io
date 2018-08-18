@@ -7,10 +7,11 @@ var countdown = document.createElement('p');
 function checkLive() {
     var current = Date.now();
     var delta = current - lastupdate;
+    /*
     if (delta > 1000 * 60 * 5) {
         lastupdate = current;
         load();
-    }
+    }*/
 
     if (nextLevelTime - smoothnextLevelTime > 1000 * 60 * 60) smoothnextLevelTime = nextLevelTime;
     smoothnextLevelTime += (nextLevelTime - smoothnextLevelTime) * 0.02;
@@ -148,7 +149,7 @@ function hack(restart, report, update) {
         }, function () { restart() });
     }, 2000);
 
-    CEnemyManager.prototype.BuildEnemy = function () { };
+    //CEnemyManager.prototype.BuildEnemy = function () { };
 
 
 
@@ -194,6 +195,30 @@ function hack(restart, report, update) {
         // restart();
         console.trace('game load error');
     }
+
+    // auto boss
+    CServerInterface.prototype.ReportBossDamage = function (damagedone, damagetaken, usedhealing, callback, error) {
+        var instance = this;
+        var rgParams = {
+            access_token: instance.m_WebAPI.m_strOAuth2Token,
+            use_heal_ability: usedhealing,
+            damage_to_boss: Math.floor(Math.random() * 60),
+            damage_taken: 0
+        };
+
+        $J.ajax({
+            url: this.m_WebAPI.BuildURL('ITerritoryControlMinigameService', 'ReportBossDamage', true),
+            method: 'POST',
+            data: rgParams,
+        }).success(function (results, textStatus, request) {
+            if (request.getResponseHeader('x-eresult') == 1) {
+                callback(results)
+            }
+            else {
+                error();
+            }
+        }).fail(error);
+    };
 
 
     CBattleSelectionState.prototype.OnLoadComplete = function (loader, resources) {
@@ -311,7 +336,7 @@ function hack(restart, report, update) {
                 };
 
                 this.m_Grid.SetTile(i, j, params);
-                if ((!params.captured) && params.clanurl) {
+                if (params.boss) {
                     var rank = - params.progress + params.difficulty * 2;
                     if (rank > max) {
                         max = rank;
@@ -347,3 +372,56 @@ function hack(restart, report, update) {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+
+var ids = [...document
+    .querySelectorAll('.see_giveaway_details_ctn>a:nth-child(1)')]
+    .map(x => x.href.match(/\d+$/)[0])
+
+var winnersLink =
+    ids.map(x => 'https://store.steampowered.com/prizes/winners/' + x)
+
+var all = {}
+
+var getWinners = winnersLink.map((x, i) => {
+    return new Promise(done => {
+        var xhr = new XMLHttpRequest()
+        xhr.open('get', x)
+        xhr.onload = function () {
+            var html = xhr.response
+            var parser = new DOMParser()
+            var doc = parser.parseFromString(html, 'text/html')
+            var winners = doc.querySelector('.giveaway_winners>.giveaway_winners')
+                .textContent.split(',').map(x => x.trim())
+
+            for (var s of winners) {
+                if (all[s] == null) all[s] = 0
+                all[s]++
+            }
+
+            done({
+                id: ids[i],
+                winners,
+                found: winners.some(x => x.match('chiuhans111'))
+            })
+        }
+        xhr.send()
+    })
+})
+
+Promise.all(getWinners).then(result => {
+    console.log(result)
+})
