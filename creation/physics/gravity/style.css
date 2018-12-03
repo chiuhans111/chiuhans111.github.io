@@ -1,0 +1,28 @@
+button{
+    font-family: inherit;
+    border: none;
+    font-size: 18px;
+    padding: 4px;
+    background-color: lightgray;
+}
+
+button:hover{
+    background-color: white;
+}
+
+button:active{
+    background-color: black;
+    color: white;
+}
+
+.bottom{
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+}
+
+.right{
+    
+    position: absolute;
+    right: 0px;
+}
