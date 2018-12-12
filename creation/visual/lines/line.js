@@ -14,7 +14,7 @@ class Line extends FlowParticle {
         this.len = floor(random(50, 400));
 
         this.p = createVector(x, y);
-        this.speed = random(1, 5)*0.8;
+        this.speed = random(1, 5) * 0.8;
         this.rand += pow(this.c - 0.5, 2) * 2;
         this.len /= this.speed;
         this.weight /= constrain(this.len / 50, 1, 2);
@@ -60,6 +60,10 @@ class Line extends FlowParticle {
         push()
 
         for (let i = 0; i < this.points.length; i++) {
+
+            if (this.points[i] != null) {
+                this.points[i].y += yspeed * (this.rand*3 )
+            }
 
 
             let f = i / this.points.length;

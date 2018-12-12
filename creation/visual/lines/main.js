@@ -1,10 +1,11 @@
 
-let dz = 0
+let dz = 5
 let lines = []
 
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
-    
+    setAttributes('antialias', true);
+
     canvas.parent(document.getElementById('bg'))
     console.log('canvas created')
     setTheme()
@@ -18,14 +19,16 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight, WEBGL)
 }
 
-
+let lastScrollY = scrollY
+let yspeed = 0
 function draw() {
     background(255)
-    translate(-width/2,-height/2,0); 
-    try{
+    translate(-width / 2, -height / 2, 0);
 
-        lines.map(x=>x.draw())
-    }catch(e){
-        window.location.reload()
-    }
+    yspeed -= (scrollY - lastScrollY) / height 
+    lastScrollY = scrollY
+    yspeed *= 0.98
+
+    lines.map(x => x.draw())
+
 }

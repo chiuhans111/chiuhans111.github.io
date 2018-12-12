@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>流動</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
     <script src="theme.js"></script>
     <script src="noise.js"></script>
     <script src="particle.js"></script>
@@ -19,19 +19,17 @@
         font-family: "Microsoft JhengHei";
         margin: 0px;
         padding: 0;
+        scroll-behavior: smooth;
     }
 
-    #bg {
+    #bg,
+    canvas {
         position: fixed;
         width: 100%;
         height: 100%;
         left: 0;
         top: 0;
         z-index: -1;
-    }
-
-    canvas {
-        margin: 0px;
     }
 
     h1 {
@@ -50,11 +48,9 @@
     }
 
     .center {
-        position: relative;
-        left: 50%;
+        position: absolute;
         top: 50%;
-        transform: translate(-50%, -50%);
-        padding-right: 16px;
+        transform: translate(0, -50%);
     }
 
     .container {
@@ -86,22 +82,20 @@
 <body>
     <div id="bg"></div>
     <div class="page">
-
-        <div class="center content">
-            <h3>
-                流線背景 DEMO
-            </h3>
-            <h1>
-                早安
-            </h1>
-            <p>礦泉水（英文：mineral water）
-                是指水中含有礦物質或其他溶解的物質，從而改變了它的味道，甚至有治療功效。
-            </p>
-            <p>
-                由於水中含有一定數量的特殊化學成分、有機物和氣體，或者具有較高的溫度（超過20℃），所以能影響人體的生理作用，醫治某些疾病，如關節炎、神經衰弱、皮膚病等。
-            </p>
-            <p>它一般是天然產生的。</p>
-            <div style="text-align: end">—— 維基百科</div>
+        <div class="container">
+            <div class="center content">
+                <h1>
+                    流線
+                </h1>
+                <p>礦泉水（英文：mineral water）
+                    是指水中含有礦物質或其他溶解的物質，從而改變了它的味道，甚至有治療功效。
+                </p>
+                <p>
+                    由於水中含有一定數量的特殊化學成分、有機物和氣體，或者具有較高的溫度（超過20℃），所以能影響人體的生理作用，醫治某些疾病，如關節炎、神經衰弱、皮膚病等。
+                </p>
+                <p>它一般是天然產生的。</p>
+                <div style="text-align: end">—— 維基百科</div>
+            </div>
         </div>
 
     </div>
