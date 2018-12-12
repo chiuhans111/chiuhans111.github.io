@@ -3,6 +3,7 @@ let dz = 5
 let lines = []
 
 function setup() {
+    lines = []
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     setAttributes('antialias', true);
 
@@ -21,14 +22,21 @@ function windowResized() {
 
 let lastScrollY = scrollY
 let yspeed = 0
+
 function draw() {
     background(255)
     translate(-width / 2, -height / 2, 0);
 
-    yspeed -= (scrollY - lastScrollY) / height 
+    yspeed -= (scrollY - lastScrollY) / height
     lastScrollY = scrollY
     yspeed *= 0.98
 
-    lines.map(x => x.draw())
+    try {
+
+        lines.map(x => x.draw())
+    }catch(e){
+        setup()
+        console.log('retry')
+    }
 
 }
