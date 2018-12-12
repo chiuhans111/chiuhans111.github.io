@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+    <script src="theme.js"></script>
+    <script src="noise.js"></script>
+    <script src="particle.js"></script>
+    <script src="line.js"></script>
+    <script src="main.js"></script>
+</head>
+<style>
+    body {
+        position: relative;
+        font-family: "Microsoft JhengHei";
+        margin: 0px;
+        padding: 0;
+    }
+
+    #bg {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        z-index: -1;
+    }
+
+    canvas {
+        margin: 0px;
+        filter: blur(0.5px)
+    }
+
+    h1 {
+        margin-top: 0;
+        font-size: 8em;
+    }
+
+    h2 {
+        font-size: 6em;
+    }
+
+    .page {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+    }
+
+    .center {
+        position: relative;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .container {
+        margin: 32px auto;
+        max-width: 960px;
+    }
+
+    .whitebg {
+        background: rgba(255, 255, 255, .8);
+        border: solid .1px lightgray;
+    }
+
+    .content {
+        margin: 16px;
+        max-width: 960px;
+    }
+
+    .footer {
+        position: absolute;
+
+        width: 100%;
+        color: white;
+        min-height: 20vh;
+        box-sizing: border-box;
+        background-color: rgba(0, 0, 0, .8);
+    }
+</style>
+
+<body>
+    <div id="bg"></div>
+    <div class="page">
+
+        <div class="center content">
+            <h3>
+                流線背景 DEMO
+            </h3>
+            <h1>
+                早安
+            </h1>
+            <p>礦泉水（英文：mineral water）
+                是指水中含有礦物質或其他溶解的物質，從而改變了它的味道，甚至有治療功效。
+            </p>
+            <p>
+                由於水中含有一定數量的特殊化學成分、有機物和氣體，或者具有較高的溫度（超過20℃），所以能影響人體的生理作用，醫治某些疾病，如關節炎、神經衰弱、皮膚病等。
+            </p>
+            <p>它一般是天然產生的。</p>
+            <div style="text-align: end">—— 維基百科</div>
+        </div>
+
+    </div>
+
+    <div class="container whitebg">
+
+        <div class="content">
+            <p>Lorem ipsum dolor sit amet, consectetur
+                adipiscing elit. Donec sagittis, odio ut
+                congue maximus, nibh ex imperdiet purus,
+                vel sodales mauris elit sit amet ipsum.
+                Phasellus pellentesque, nunc a egestas
+                dignissim, eros eros viverra orci, auctor
+                tristique nulla tellus a mi. Nunc diam
+                risus, auctor et sem eget, scelerisque
+                lacinia turpis. Pellentesque placerat
+                tristique velit in consequat. Vestibulum
+                ante ipsum primis in faucibus orci luctus
+                et ultrices posuere cubilia Curae; Duis
+                tristique pulvinar ornare. Quisque egestas
+                eget arcu non gravida. Lorem ipsum dolor
+                sit amet, consectetur adipiscing elit. In
+                et sodales risus. Quisque auctor ligula
+                sem, quis elementum felis rutrum nec.</p>
+            <p>
+                Proin at auctor lacus. Donec ultrices vitae
+                urna ut tempor. Nulla faucibus, lectus vel
+                sollicitudin consectetur, dui ligula
+                pharetra sem, vitae luctus quam leo in
+                ligula. Donec euismod, purus sit amet
+                bibendum dictum, dolor urna hendrerit quam,
+                in ornare erat nulla sed ex. Quisque
+                elementum dolor nec ullamcorper rhoncus.
+                Vestibulum eu nibh ac nunc ullamcorper
+                vestibulum eu vel urna. Praesent at dictum
+                lorem. Suspendisse eu ultrices erat.
+                Suspendisse tempus mauris gravida sem
+                consequat, sit amet aliquet ex commodo.
+                Cras diam tellus, fermentum porta auctor
+                eu, condimentum ut elit. Nulla in convallis
+                sapien. Praesent faucibus orci enim.
+                Vivamus in facilisis nisl. Suspendisse
+                ultrices in arcu et convallis. Nulla
+                facilisi. Etiam suscipit mollis leo, eu
+                volutpat elit semper non.
+            </p>
+        </div>
+    </div>
+
+
+    <div class="container whitebg">
+
+        <div class="content">
+            <p>Lorem ipsum dolor sit amet, consectetur
+                adipiscing elit. Donec sagittis, odio ut
+                congue maximus, nibh ex imperdiet purus,
+                vel sodales mauris elit sit amet ipsum.
+                Phasellus pellentesque, nunc a egestas
+                dignissim, eros eros viverra orci, auctor
+                tristique nulla tellus a mi. Nunc diam
+                risus, auctor et sem eget, scelerisque
+                lacinia turpis. Pellentesque placerat
+                tristique velit in consequat. Vestibulum
+                ante ipsum primis in faucibus orci luctus
+                et ultrices posuere cubilia Curae; Duis
+                tristique pulvinar ornare. Quisque egestas
+                eget arcu non gravida. Lorem ipsum dolor
+                sit amet, consectetur adipiscing elit. In
+                et sodales risus. Quisque auctor ligula
+                sem, quis elementum felis rutrum nec.</p>
+            <p>
+                Proin at auctor lacus. Donec ultrices vitae
+                urna ut tempor. Nulla faucibus, lectus vel
+                sollicitudin consectetur, dui ligula
+                pharetra sem, vitae luctus quam leo in
+                ligula. Donec euismod, purus sit amet
+                bibendum dictum, dolor urna hendrerit quam,
+                in ornare erat nulla sed ex. Quisque
+                elementum dolor nec ullamcorper rhoncus.
+                Vestibulum eu nibh ac nunc ullamcorper
+                vestibulum eu vel urna. Praesent at dictum
+                lorem. Suspendisse eu ultrices erat.
+                Suspendisse tempus mauris gravida sem
+                consequat, sit amet aliquet ex commodo.
+                Cras diam tellus, fermentum porta auctor
+                eu, condimentum ut elit. Nulla in convallis
+                sapien. Praesent faucibus orci enim.
+                Vivamus in facilisis nisl. Suspendisse
+                ultrices in arcu et convallis. Nulla
+                facilisi. Etiam suscipit mollis leo, eu
+                volutpat elit semper non.
+            </p>
+        </div>
+    </div>
+
+    <div class="container whitebg">
+
+        <div class="content">
+            <p>Lorem ipsum dolor sit amet, consectetur
+                adipiscing elit. Donec sagittis, odio ut
+                congue maximus, nibh ex imperdiet purus,
+                vel sodales mauris elit sit amet ipsum.
+                Phasellus pellentesque, nunc a egestas
+                dignissim, eros eros viverra orci, auctor
+                tristique nulla tellus a mi. Nunc diam
+                risus, auctor et sem eget, scelerisque
+                lacinia turpis. Pellentesque placerat
+                tristique velit in consequat. Vestibulum
+                ante ipsum primis in faucibus orci luctus
+                et ultrices posuere cubilia Curae; Duis
+                tristique pulvinar ornare. Quisque egestas
+                eget arcu non gravida. Lorem ipsum dolor
+                sit amet, consectetur adipiscing elit. In
+                et sodales risus. Quisque auctor ligula
+                sem, quis elementum felis rutrum nec.</p>
+            <p>
+                Proin at auctor lacus. Donec ultrices vitae
+                urna ut tempor. Nulla faucibus, lectus vel
+                sollicitudin consectetur, dui ligula
+                pharetra sem, vitae luctus quam leo in
+                ligula. Donec euismod, purus sit amet
+                bibendum dictum, dolor urna hendrerit quam,
+                in ornare erat nulla sed ex. Quisque
+                elementum dolor nec ullamcorper rhoncus.
+                Vestibulum eu nibh ac nunc ullamcorper
+                vestibulum eu vel urna. Praesent at dictum
+                lorem. Suspendisse eu ultrices erat.
+                Suspendisse tempus mauris gravida sem
+                consequat, sit amet aliquet ex commodo.
+                Cras diam tellus, fermentum porta auctor
+                eu, condimentum ut elit. Nulla in convallis
+                sapien. Praesent faucibus orci enim.
+                Vivamus in facilisis nisl. Suspendisse
+                ultrices in arcu et convallis. Nulla
+                facilisi. Etiam suscipit mollis leo, eu
+                volutpat elit semper non.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <div class="content">
+                <h3>by Hans Chiu</h3>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
