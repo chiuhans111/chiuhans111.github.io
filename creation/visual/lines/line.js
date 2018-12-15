@@ -7,7 +7,7 @@ class Line extends FlowParticle {
 
         this.points = new Array();
 
-        this.weight = pow(random(1, 3), 2);
+        this.weight = pow(random(1, 4), 2);
         this.c = random(1);
         this.lightness = random(0.95, 1);
 
@@ -61,8 +61,11 @@ class Line extends FlowParticle {
 
         for (let i = 0; i < this.points.length; i++) {
 
+
             if (this.points[i] != null) {
-                this.points[i].y += yspeed * (this.rand*3 )
+                this.points[i].y += yspeed * (this.rand * 3)
+                    * (this.points.length - i + 0.1)
+                    / this.points.length
             }
 
 

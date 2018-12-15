@@ -6,12 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>流動</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
-    <script src="theme.js"></script>
-    <script src="noise.js"></script>
-    <script src="particle.js"></script>
-    <script src="line.js"></script>
-    <script src="main.js"></script>
+
 </head>
 <style>
     body {
@@ -50,10 +45,13 @@
     .center {
         position: absolute;
         top: 50%;
-        transform: translate(0, -50%);
+        transform: translate(0,-50%);
     }
 
     .container {
+        position: relative;
+        transition: all 1s;
+        transition-delay: .1s;
         margin: 64px auto;
         max-width: 960px;
     }
@@ -81,12 +79,18 @@
         box-sizing: border-box;
         background-color: rgba(0, 0, 0, .8);
     }
+
+    .hidden {
+        opacity: 0;
+        transform: translate(0, 32px);
+    }
 </style>
 
 <body>
     <div id="bg"></div>
-    <div class="page">
-        <div class="container">
+
+    <div class="hidden container">
+        <div class="page">
             <div class="center content">
                 <h1>
                     流線
@@ -235,5 +239,11 @@
         </div>
     </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
+<script src="theme.js"></script>
+<script src="noise.js"></script>
+<script src="particle.js"></script>
+<script src="line.js"></script>
+<script src="main.js"></script>
 
 </html>

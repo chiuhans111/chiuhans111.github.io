@@ -23,7 +23,16 @@ function windowResized() {
 let lastScrollY = scrollY
 let yspeed = 0
 
+let contents = document.querySelectorAll('.container')
+contents.forEach(content => {
+    content.classList.add('hidden')
+})
+
+console.log(contents)
+
+
 function draw() {
+
     background(255)
     translate(-width / 2, -height / 2, 0);
 
@@ -34,9 +43,18 @@ function draw() {
     try {
 
         lines.map(x => x.draw())
-    }catch(e){
+    } catch (e) {
         setup()
         console.log('retry')
     }
 
+
+    contents.forEach(content => {
+        if(content.getBoundingClientRect().top<innerHeight){
+            content.classList.remove('hidden')
+        }
+    })
+
 }
+
+
