@@ -15,14 +15,22 @@ uniform mat4 mProj;
 
 uniform float time;
 
+#define PI 3.1415926535
 
 void main(){
     float offset = vertPosition.x+vertPosition.y+vertPosition.z;
 
     fragColor = vertColor;
     fragTexCoord = vertTexCoord;
-    vec3 position = vertPosition*(sin(time+offset)+5.)/6.;
-    gl_Position = mProj * mView * mWorld * vec4(position, 1.);
+    vec4 position = vec4(vertPosition,1);
+
+    position = mWorld * position;
+     position = position + +vec4(0, (sin(time/3.*PI+offset))/2. , 0, 0);
+    position = mView * position;
+    position = mProj * position;
+
+
+    gl_Position = position;
 }
 `
 
@@ -40,7 +48,7 @@ uniform float time;
 #define PI 3.1415926535
 
 float random(vec2 v){
-    return fract(sin(dot(v, vec2(12.,34.)))*56789.);
+    return fract(fract(sin(dot(v, vec2(12.34,56.78)))*10.)*10.);
 }
 
 
@@ -57,29 +65,37 @@ void main(){
     
     float strip = step(.5,fract(fragTexCoord.y*gridsize/2.));
     
-    float randomGrid = random(gridi+80.);
-
-    vec2 randomOff = vec2(
-        step(.5,random(gridi)),
-        step(.5,random(gridi+10.))
-    );
-
-    float ballGradient =
-        (1.-length(grid-randomOff))
-        *step(.2,random(gridi+20.))  // black block
-        +(1.-step(.2,random(gridi+20.)))*grid.x;
     
-
+    
     
     float stripOffset = gridi.y/gridsize;
-    float utime = fract(time/4.+stripOffset/3.);
-    float utime2 = fract(time/4.+stripOffset/3.+randomGrid*.1);
-
-    float atime = smoothstep(0.3,0.7,utime);
-    float atime2 = smoothstep(0.1,0.2,utime2)*.5+smoothstep(0.5,0.6,utime2)*.5;
     
-    float loop = max(0.,cos(atime*PI/2.));
-    float ball = step(sin(atime2*PI) , ballGradient)*step(.1,random(gridi+20.));  // black block
+    float utime = fract(time/4.+stripOffset/3.);
+    float atime = smoothstep(0.3,0.7,utime);
+    
+    
+    
+    float loop = 1.-max(0.,cos(atime*PI/2.));
+    
+    vec2 grid2 = fract((fragTexCoord+vec2(loop,0))*gridsize);
+    vec2 gridi2 = mod(floor((fragTexCoord+vec2(loop,0))*gridsize),gridsize);
+    
+    vec2 randomOff = vec2(
+        step(.5,random(gridi2)),
+        step(.5,random(gridi2+10.))
+    );
+    
+    float randomGrid = random(gridi2+80.);
+    float ballGradient =
+    (1.-length(grid2-randomOff))
+    *step(.2,random(gridi2+20.))  // black block
+    +(1.-step(.2,random(gridi2+20.)))*grid2.x;
+
+
+    float utime2 = 1.-fract(time/8.+stripOffset/6.+randomGrid*.1);
+    float atime2 = smoothstep(0.1,0.2,utime2)*(1.-smoothstep(0.5,0.6,utime2));
+
+    float ball = step(cos(atime2*PI+PI) , ballGradient);
 
     transformedCoord =  fract(transformedCoord + vec2(loop, ball*.5));
 
@@ -89,7 +105,7 @@ void main(){
 
     // gl_FragColor = vec4(transformedCoord,1, 1);
 
-    // gl_FragColor = vec4(ball,0,0,1);
+    // gl_FragColor = vec4(randomOff,0,1);
 }
 `
 
@@ -323,7 +339,7 @@ function Loop() {
 
 
 
-    gl.uniform1f(timeUniformLocation, performance.now() / 1000)
+    gl.uniform1f(timeUniformLocation, performance.now() / 1000 % 24)
 
     //gl.drawArrays(gl.TRIANGLES, 0, 3)
     gl.bindTexture(gl.TEXTURE_2D, boxTexture)
