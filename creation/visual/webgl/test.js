@@ -21,7 +21,7 @@ void main(){
 
     fragColor = vertColor;
     fragTexCoord = vertTexCoord;
-    vec3 position = vertPosition*(sin(time/400.+offset*.5)+1.)/2.;
+    vec3 position = vertPosition*(sin(time+offset)+8.)/9.;
     gl_Position = mProj * mView * mWorld * vec4(position, 1.);
 }
 `
@@ -36,11 +36,60 @@ varying vec2 fragTexCoord;
 uniform sampler2D sampler;
 uniform float time;
 
+#define gridsize 12.
+#define PI 3.1415926535
+
+float random(vec2 v){
+    return fract(sin(dot(v, vec2(12.,34.)))*56789.);
+}
+
+
 void main(){
-    vec4 color1 = texture2D(sampler, fragTexCoord);
-    vec4 color2 = vec4(fragColor, 1.);
-    vec4 color3 = vec4(fragTexCoord,sin(time/200.)/2.+.5,1.);
-    gl_FragColor = color1*color3;
+    
+    
+    vec2 transformedCoord = fragTexCoord;
+    
+    
+    
+    
+    vec2 grid = fract(fragTexCoord*gridsize);
+    vec2 gridi = floor(fragTexCoord*gridsize);
+    
+    float strip = step(.5,fract(fragTexCoord.y*gridsize/2.));
+    
+    float randomGrid = random(gridi+80.);
+
+    vec2 randomOff = vec2(
+        step(.5,random(gridi)),
+        step(.5,random(gridi+10.))
+    );
+
+    float ballGradient =
+        (1.-length(grid-randomOff))
+        *step(.2,random(gridi+20.))  // black block
+        +(1.-step(.2,random(gridi+20.)))*grid.x;
+    
+
+    
+    float stripOffset = gridi.y/gridsize;
+    float utime = fract(time/4.+stripOffset/3.);
+    float utime2 = fract(time/4.+stripOffset/3.+randomGrid*.1);
+
+    float atime = smoothstep(0.3,0.7,utime);
+    float atime2 = smoothstep(0.1,0.2,utime2)*.5+smoothstep(0.5,0.6,utime2)*.5;
+    
+    float loop = max(0.,cos(atime*PI/2.));
+    float ball = step(sin(atime2*PI) , ballGradient)*step(.1,random(gridi+20.));  // black block
+
+    transformedCoord =  fract(transformedCoord + vec2(loop, ball*.5));
+
+    vec3 color1 = texture2D(sampler, transformedCoord).rgb;
+
+    gl_FragColor = vec4(color1,1);
+
+    // gl_FragColor = vec4(transformedCoord,1, 1);
+
+    // gl_FragColor = vec4(ball,0,0,1);
 }
 `
 
@@ -258,7 +307,7 @@ var xrm = glMatrix.mat4.create()
 var yrm = glMatrix.mat4.create()
 
 function Loop() {
-    angle = performance.now() / 1000 / 6 * 4 * Math.PI
+    angle = performance.now() / 1000 / 6 * Math.PI
 
     // transformation
     glMatrix.mat4.rotate(xrm, glMatrix.mat4.create(), angle, [0, 1, 0])
@@ -274,14 +323,14 @@ function Loop() {
 
 
 
-    gl.uniform1f(timeUniformLocation, performance.now())
+    gl.uniform1f(timeUniformLocation, performance.now() / 1000)
 
     //gl.drawArrays(gl.TRIANGLES, 0, 3)
     gl.bindTexture(gl.TEXTURE_2D, boxTexture)
     gl.activeTexture(gl.TEXTURE0)
 
     // Draw
-    gl.clearColor(0, 0, 0, 1.0)
+    gl.clearColor(.9, .9, .9, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0)
