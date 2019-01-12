@@ -7,17 +7,85 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
+        html {
+            margin: 0;
+            background-color: #151515;
+            color: rgb(0, 255, 221);
+            font-size: 32px;
+            font-family: "source code pro", 微軟正黑體, consolas, arial;
+            letter-spacing: 0em;
+            line-height: 1em;
+            font-weight: 100;
+        }
+
+        ::-webkit-scrollbar{
+            display: none;
+        }
+
         body {
             margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            position: fixed;
+            margin: 0;
+            pointer-events: none;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            word-wrap: break-word;
         }
     </style>
 </head>
 
 <body>
-    <img src="./chai1.png" id='img' alt="" hidden>
-    <canvas width="10" height="10"></canvas>
+    <div class="page">
+        <span id="time"></span>
+        
+        <p>./test.js</p>
+        <span id="script_code"></span>
+        <p>./test.html</p>
+        <span id="html_code"></span>
+    </div>
+    <img src="./chai2.png" id='img' alt="" hidden>
+    <canvas></canvas>
     <script src="./gl-matrix-min.js"></script>
     <script src="./test.js"></script>
+    <script>
+        var time_element = document.getElementById('time')
+
+        var html_code_element = document.getElementById('html_code')
+        var script_code_element = document.getElementById('script_code')
+
+
+        function update() {
+            time_element.textContent = new Date().toLocaleString()
+            requestAnimationFrame(update)
+        }
+        requestAnimationFrame(update)
+
+
+
+        var xhr1 = new XMLHttpRequest()
+        xhr1.open('get', './test.html')
+        xhr1.addEventListener('load', function () {
+            html_code_element.textContent = xhr1.response
+        })
+        xhr1.send()
+
+        var xhr2 = new XMLHttpRequest()
+        xhr2.open('get', './test.js')
+        xhr2.addEventListener('load', function () {
+            script_code_element.textContent = xhr2.response
+        })
+        xhr2.send()
+
+    </script>
 </body>
 
 </html>

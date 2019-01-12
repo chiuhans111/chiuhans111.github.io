@@ -18,14 +18,13 @@ uniform float time;
 #define PI 3.1415926535
 
 void main(){
-    float offset = vertPosition.x+vertPosition.y+vertPosition.z;
+    float offset = vertPosition.z;
 
     fragColor = vertColor;
     fragTexCoord = vertTexCoord;
     vec4 position = vec4(vertPosition,1);
 
     position = mWorld * position;
-     position = position + +vec4(0, (sin(time/3.*PI+offset))/2. , 0, 0);
     position = mView * position;
     position = mProj * position;
 
@@ -71,7 +70,7 @@ void main(){
     float stripOffset = gridi.y/gridsize;
     
     float utime = fract(time/4.+stripOffset/3.);
-    float atime = smoothstep(0.3,0.7,utime);
+    float atime = smoothstep(0.7,0.9,utime);
     
     
     
@@ -93,7 +92,7 @@ void main(){
 
 
     float utime2 = 1.-fract(time/8.+stripOffset/6.+randomGrid*.1);
-    float atime2 = smoothstep(0.1,0.2,utime2)*(1.-smoothstep(0.5,0.6,utime2));
+    float atime2 = smoothstep(0.1,0.2,utime2)*(1.-smoothstep(0.8,0.9,utime2));
 
     float ball = step(cos(atime2*PI+PI) , ballGradient);
 
@@ -184,8 +183,8 @@ var boxVertices = []
 
 let sideX = [1, 1, -1, -1]
 let sideY = [-1, 1, 1, -1]
-let sideU = [1, 1, 0, 0]
-let sideV = [1, 0, 0, 1]
+let sideU = [1, 0, 0, 1]
+let sideV = [0, 0, 1, 1]
 // top
 for (let i = 0; i < 4; i++) boxVertices.push(
     sideY[i], 1, sideX[i], 0.5, 0.5, 0.5, sideU[i], sideV[i])
@@ -298,7 +297,7 @@ var worldMatrix = glMatrix.mat4.create()
 var viewMatrix = glMatrix.mat4.create()
 var projMatrix = glMatrix.mat4.create()
 
-glMatrix.mat4.lookAt(viewMatrix, [0, 0, -5], [0, 0, 0], [0, 1, 0]) // eye, center, up
+glMatrix.mat4.lookAt(viewMatrix, [0, 0, -8], [0, 0, 0], [0, 1, 0]) // eye, center, up
 
 
 gl.uniformMatrix4fv(matWorldUniformLocation, false, worldMatrix)
@@ -321,14 +320,29 @@ var angle = 0
 
 var xrm = glMatrix.mat4.create()
 var yrm = glMatrix.mat4.create()
+var zrm = glMatrix.mat4.create()
+
+var zAngle = 0
+var zAngleSpeed = 0
+var lastOffset = 0
 
 function Loop() {
-    angle = performance.now() / 1000 / 6 * Math.PI
+    angle = (performance.now() / 1000 / 6 * Math.PI)
 
     // transformation
     glMatrix.mat4.rotate(xrm, glMatrix.mat4.create(), angle, [0, 1, 0])
     glMatrix.mat4.rotate(yrm, glMatrix.mat4.create(), angle / 2, [0, 0, 1])
-    glMatrix.mat4.mul(worldMatrix, xrm, yrm)
+    glMatrix.mat4.rotate(zrm, glMatrix.mat4.create(), zAngle, [1, 0, 0])
+
+    let offsetDelta = window.pageYOffset - lastOffset
+    lastOffset = window.pageYOffset
+    if (Math.abs(offsetDelta) > Math.abs(zAngleSpeed)/2)
+        zAngleSpeed = offsetDelta
+    zAngleSpeed *= 0.98
+    zAngle += zAngleSpeed / 3000
+
+    glMatrix.mat4.mul(worldMatrix, xrm, zrm)
+    glMatrix.mat4.mul(worldMatrix, worldMatrix, yrm)
     gl.uniformMatrix4fv(matWorldUniformLocation, false, worldMatrix)
 
 
@@ -339,14 +353,14 @@ function Loop() {
 
 
 
-    gl.uniform1f(timeUniformLocation, performance.now() / 1000 % 24)
+    gl.uniform1f(timeUniformLocation, (zAngle + performance.now() / 1000) % 24)
 
     //gl.drawArrays(gl.TRIANGLES, 0, 3)
     gl.bindTexture(gl.TEXTURE_2D, boxTexture)
     gl.activeTexture(gl.TEXTURE0)
 
     // Draw
-    gl.clearColor(.9, .9, .9, 1.0)
+    gl.clearColor(0, 0, 0, 0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0)
