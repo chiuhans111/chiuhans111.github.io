@@ -21,7 +21,7 @@ void main(){
 
     fragColor = vertColor;
     fragTexCoord = vertTexCoord;
-    vec3 position = vertPosition*(sin(time+offset)+8.)/9.;
+    vec3 position = vertPosition*(sin(time+offset)+5.)/6.;
     gl_Position = mProj * mView * mWorld * vec4(position, 1.);
 }
 `
