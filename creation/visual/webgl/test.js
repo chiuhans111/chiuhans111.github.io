@@ -1,112 +1,112 @@
-
-var vertexShaderText = `
-precision mediump float;
-
-attribute vec3 vertPosition;
-attribute vec3 vertColor;
-attribute vec2 vertTexCoord;
-
-varying vec3 fragColor;
-varying vec2 fragTexCoord;
-
-uniform mat4 mWorld;
-uniform mat4 mView;
-uniform mat4 mProj;
-
-uniform float time;
-
-#define PI 3.1415926535
-
-void main(){
-    float offset = vertPosition.z;
-
-    fragColor = vertColor;
-    fragTexCoord = vertTexCoord;
-    vec4 position = vec4(vertPosition,1);
-
-    position = mWorld * position;
-    position = mView * position;
-    position = mProj * position;
-
-
-    gl_Position = position;
-}
-`
-
-
-var fragmentShaderText = `
-precision mediump float;
-
-varying vec3 fragColor;
-varying vec2 fragTexCoord;
-
-uniform sampler2D sampler;
-uniform float time;
-
-#define gridsize 12.
-#define PI 3.1415926535
-
-float random(vec2 v){
-    return fract(fract(sin(dot(v, vec2(12.34,56.78)))*10.)*10.);
-}
+var vertexShaderText = [
+    "precision mediump float;",
+    "",
+    "attribute vec3 vertPosition;",
+    "attribute vec3 vertColor;",
+    "attribute vec2 vertTexCoord;",
+    "",
+    "varying vec3 fragColor;",
+    "varying vec2 fragTexCoord;",
+    "",
+    "uniform mat4 mWorld;",
+    "uniform mat4 mView;",
+    "uniform mat4 mProj;",
+    "",
+    "uniform float time;",
+    "",
+    "#define PI 3.1415926535",
+    "",
+    "void main(){",
+    "   float offset = vertPosition.z;",
+    "",
+    "   fragColor = vertColor;",
+    "   fragTexCoord = vertTexCoord;",
+    "   vec4 position = vec4(vertPosition,1);",
+    "",
+    "   position = mWorld * position;",
+    "   position = mView * position;",
+    "   position = mProj * position;",
+    "",
+    "",
+    "   gl_Position = position;",
+    "}"
+].join('\n');
 
 
-void main(){
-    
-    
-    vec2 transformedCoord = fragTexCoord;
-    
-    
-    
-    
-    vec2 grid = fract(fragTexCoord*gridsize);
-    vec2 gridi = floor(fragTexCoord*gridsize);
-    
-    float strip = step(.5,fract(fragTexCoord.y*gridsize/2.));
-    
-    
-    
-    
-    float stripOffset = gridi.y/gridsize;
-    
-    float utime = fract(time/4.+stripOffset/3.);
-    float atime = smoothstep(0.7,0.9,utime);
-    
-    
-    
-    float loop = 1.-max(0.,cos(atime*PI/2.));
-    
-    vec2 grid2 = fract((fragTexCoord+vec2(loop,0))*gridsize);
-    vec2 gridi2 = mod(floor((fragTexCoord+vec2(loop,0))*gridsize),gridsize);
-    
-    vec2 randomOff = vec2(
-        step(.5,random(gridi2)),
-        step(.5,random(gridi2+10.))
-    );
-    
-    float randomGrid = random(gridi2+80.);
-    float ballGradient =
-    (1.-length(grid2-randomOff))
-    *step(.2,random(gridi2+20.))  // black block
-    +(1.-step(.2,random(gridi2+20.)))*grid2.x;
 
+var fragmentShaderText = [
+    "precision mediump float;",
+    "",
+    "varying vec3 fragColor;",
+    "varying vec2 fragTexCoord;",
+    "",
+    "uniform sampler2D sampler;",
+    "uniform float time;",
+    "",
+    "#define gridsize 12.",
+    "#define PI 3.1415926535",
+    "",
+    "float random(vec2 v){",
+    "    return fract(fract(sin(dot(v, vec2(12.34, 56.78))) * 10.) * 10.);",
+    "}",
+    "",
+    "",
+    "void main(){",
+    "",
+    "",
+    "    vec2 transformedCoord = fragTexCoord;",
+    "",
+    "",
+    "",
+    "",
+    "    vec2 grid = fract(fragTexCoord * gridsize);",
+    "    vec2 gridi = floor(fragTexCoord * gridsize);",
+    "",
+    "    float strip = step(.5, fract(fragTexCoord.y * gridsize / 2.));",
+    "",
+    "",
+    "",
+    "",
+    "    float stripOffset = gridi.y / gridsize;",
+    "",
+    "    float utime = fract(time / 4. + stripOffset / 3.);",
+    "    float atime = smoothstep(0.7, 0.9, utime);",
+    "",
+    "",
+    "",
+    "    float loop = 1. - max(0., cos(atime * PI / 2.));",
+    "",
+    "    vec2 grid2 = fract((fragTexCoord + vec2(loop, 0)) * gridsize);",
+    "    vec2 gridi2 = mod(floor((fragTexCoord + vec2(loop, 0)) * gridsize), gridsize);",
+    "",
+    "    vec2 randomOff = vec2(",
+    "        step(.5, random(gridi2)),",
+    "        step(.5, random(gridi2 + 10.))",
+    "    );",
+    "",
+    "    float randomGrid = random(gridi2 + 80.);",
+    "    float ballGradient =",
+    "        (1. - length(grid2 - randomOff))",
+    "        * step(.2, random(gridi2 + 20.))  // black block",
+    "        + (1. - step(.2, random(gridi2 + 20.))) * grid2.x;",
+    "",
+    "",
+    "    float utime2 = 1. - fract(time / 8. + stripOffset / 6. + randomGrid * .1);",
+    "    float atime2 = smoothstep(0.1, 0.2, utime2) * (1. - smoothstep(0.8, 0.9, utime2));",
+    "",
+    "    float ball = step(cos(atime2 * PI + PI), ballGradient);",
+    "",
+    "    transformedCoord = fract(transformedCoord + vec2(loop, ball * .5));",
+    "",
+    "    vec3 color1 = texture2D(sampler, transformedCoord).rgb;",
+    "",
+    "    gl_FragColor = vec4(color1, 1);",
+    "",
+    "    // gl_FragColor = vec4(transformedCoord,1, 1);",
+    "",
+    "    // gl_FragColor = vec4(randomOff,0,1);",
+    "}"].join('\n')
 
-    float utime2 = 1.-fract(time/8.+stripOffset/6.+randomGrid*.1);
-    float atime2 = smoothstep(0.1,0.2,utime2)*(1.-smoothstep(0.8,0.9,utime2));
-
-    float ball = step(cos(atime2*PI+PI) , ballGradient);
-
-    transformedCoord =  fract(transformedCoord + vec2(loop, ball*.5));
-
-    vec3 color1 = texture2D(sampler, transformedCoord).rgb;
-
-    gl_FragColor = vec4(color1,1);
-
-    // gl_FragColor = vec4(transformedCoord,1, 1);
-
-    // gl_FragColor = vec4(randomOff,0,1);
-}
-`
 
 
 
@@ -336,7 +336,7 @@ function Loop() {
 
     let offsetDelta = window.pageYOffset - lastOffset
     lastOffset = window.pageYOffset
-    if (Math.abs(offsetDelta) > Math.abs(zAngleSpeed)/2)
+    if (Math.abs(offsetDelta) > Math.abs(zAngleSpeed) / 2)
         zAngleSpeed = offsetDelta
     zAngleSpeed *= 0.98
     zAngle += zAngleSpeed / 3000
