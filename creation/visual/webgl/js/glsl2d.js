@@ -67,14 +67,31 @@ gl.enableVertexAttribArray(vertex_position_location)
 let uniforms = {
     time: gl.getUniformLocation(program, 'time'),
     mouse: gl.getUniformLocation(program, 'mouse'),
-    now: gl.getUniformLocation(program, 'now'),
+
     u_size: gl.getUniformLocation(program, 'u_size'),
+    u_resize: gl.getUniformLocation(program, 'u_resize'),
+
+    ms: gl.getUniformLocation(program, 't_ms'),
+    sec: gl.getUniformLocation(program, 't_sec'),
+    min: gl.getUniformLocation(program, 't_min'),
+    hour: gl.getUniformLocation(program, 't_hour'),
+}
+
+let time = {
+    ms: 0,
+    sec: 0,
+    min: 0,
+    hour: 0
 }
 gl.uniform1f(uniforms.time, 0)
 gl.uniform2f(uniforms.mouse, 0, 0)
-gl.uniform2f(uniforms.u_size, 0, 0)
 gl.uniform1f(uniforms.now, 0)
-
+gl.uniform2f(uniforms.u_size, 0, 0)
+gl.uniform1f(uniforms.ms, time.ms)
+gl.uniform1f(uniforms.sec, time.sec)
+gl.uniform1f(uniforms.min, time.min)
+gl.uniform1f(uniforms.hour, time.hour)
+gl.uniform2f(uniforms.u_resize, 1, 1)
 //
 // Loop
 //
@@ -94,7 +111,21 @@ function Loop() {
     // update uniform
     //
     gl.uniform1f(uniforms.time, performance.now() / 1000 % 10)
-    gl.uniform1f(uniforms.now, Date.now() / 1000)
+    let date = new Date();
+    time.ms = date.getMilliseconds()
+    time.sec = date.getSeconds()
+    time.min = date.getMinutes()
+    time.hour = date.getHours()
+    gl.uniform1f(uniforms.ms, time.ms)
+    gl.uniform1f(uniforms.sec, time.sec)
+    gl.uniform1f(uniforms.min, time.min)
+    gl.uniform1f(uniforms.hour, time.hour)
+
+
+    if (window.innerWidth > window.innerHeight)
+        gl.uniform2f(uniforms.u_resize, window.innerWidth / window.innerHeight, 1)
+    else
+        gl.uniform2f(uniforms.u_resize, 1, window.innerHeight / window.innerWidth)
     gl.uniform2f(uniforms.u_size, window.innerWidth, window.innerHeight)
 
 

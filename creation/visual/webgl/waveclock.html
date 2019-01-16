@@ -5,14 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>WaveNoise</title>
+    <title>TIME</title>
     <link rel="stylesheet" href="./style.css">
+    <style>
+        body{
+            color: white;
+        }
+        h1{
+            text-shadow: 0px 8px 24px #00000060;
+        }
+    </style>
 </head>
 
 <body>
     <div class="page">
         <div class="center">
-            <h1>WAVENOISE</h1>
+            <h1 id="time">TIME</h1>
         </div>
     </div>
     <canvas></canvas>
@@ -43,8 +51,11 @@ varying vec2 vPos;
 
 uniform float time;
 uniform vec2 mouse;
-uniform float now;
-uniform vec2 u_size;
+uniform float t_ms;
+uniform float t_sec;
+uniform float t_min;
+uniform float t_hour;
+uniform vec2 u_resize;
 
 //-----------//
 // FUNCTIONS //
@@ -82,26 +93,45 @@ vec3 wavenoise(vec2 p, float t){
 }
 
 
+float speed(float f){
+    return smoothstep(0.,1.,f)*.5+f*.5;
+}
+
 //------//
 // MAIN //
 //------//
 
+
+
 void main(){
-    vec2 pixel = (vPos/2.+.5)*u_size;
-    vec2 mousep = (mouse/2.+.5)*u_size;
+    vec2 p = vPos.yx*u_resize.yx;
+    vec2 mousep = mouse.yx*u_resize.yx;
+    float angle = modPI(atan(p.y, p.x)+TWOPI);
 
-    vec3 f1 = wavenoise(pixel/2000., mod(time, 10.));
-    vec3 f2 = wavenoise(pixel/2000., mod(time, 10.)-10.);
-    vec3 f = mix(f1, f2, mod(time, 10.)/10.);
-    float nf = f.y;
+    vec2 grid = fract(p*2.);
 
-    nf+=50./(length(pixel-mousep)+50.);
+    float ms = t_ms/1000.;
+    float sec = (t_sec+speed(ms))/60.;
+    float min = (t_min+sec)/60.;
+    float hour = (t_hour+min)/12.;
 
-    vec3 color = mix(
-        vec3(1),
-        vec3(.95,.2,.1),
-        step(.95,fract(nf*4.))
-    );
+    float ms_angle = ms*TWOPI;
+    float sec_angle = sec*TWOPI;
+    float min_angle = min*TWOPI;
+    float hour_angle = hour*TWOPI;
+
+    float ms_swipe = modPI(ms_angle+TWOPI-angle)/TWOPI;
+    float sec_swipe = modPI(sec_angle+TWOPI-angle)/TWOPI;
+    float min_swipe = modPI(min_angle+TWOPI-angle)/TWOPI;
+    float hour_swipe = modPI(hour_angle+TWOPI-angle)/TWOPI;
+
+    vec3 f1 = wavenoise(p, 100.*sec);
+    vec3 f2 = wavenoise(p, 100.*(sec-1.));
+    vec3 f = mix(f1, f2, sec);
+
+    float nf = f.x * length(f.yz) /10. + sec_swipe + min_swipe*0.75 + hour_swipe*1.5;
+    nf = mix(0., nf, length(p));
+    vec3 color = vec3(fract(nf-sec*20.) );
 
 
     gl_FragColor = vec4(color, 1);
@@ -109,6 +139,14 @@ void main(){
         
     </script>
     <script src="./js/glsl2d.js"></script>
+    <script>
+        var time_dom = document.getElementById('time')
+        function Update() {
+            time_dom.textContent = time.hour + ':' + time.min + ':' + time.sec
+            requestAnimationFrame(Update);
+        }
+        requestAnimationFrame(Update);
+    </script>
 </body>
 
 </html>
