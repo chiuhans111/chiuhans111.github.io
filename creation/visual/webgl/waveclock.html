@@ -141,7 +141,7 @@ void main(){
 
     float balls = smoothstep(ff-0.1,ff+0.1,length(grid-.5));
     vec3 color = mix(
-        f.xxx/4.,
+        f.xxx/6.,
         vec3(hour_swipe,min_swipe,sec_swipe)*.5+vec3(.6, .4, .1),
         balls
     );
