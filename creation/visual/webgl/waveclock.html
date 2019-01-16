@@ -140,9 +140,35 @@ void main(){
     float ff = fract(nf-sec*2.);
 
     float balls = smoothstep(ff-0.1,ff+0.1,length(grid-.5));
+
+    vec3 baseColor = mix(
+        mix(
+            mix(
+                vec3(246,250,255),
+                vec3(238,234,24),
+                sec_swipe) ,
+            mix(
+                vec3(237,196,149),
+                vec3(61,156,9),
+                sec_swipe),
+            min_swipe
+        ) , mix( mix(
+                vec3(8,145,205),
+                vec3(119,107,125),
+                sec_swipe),
+            mix(
+                vec3(30,40,0),
+                vec3(0,8,0),
+                sec_swipe),
+            min_swipe
+        ),
+        hour_swipe
+    )/255.;
+
+
     vec3 color = mix(
-        f.xxx/6.,
-        vec3(hour_swipe,min_swipe,sec_swipe)*.5+vec3(.6, .4, .1),
+        vec3(0),
+        baseColor,
         balls
     );
 
