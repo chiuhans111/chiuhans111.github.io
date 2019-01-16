@@ -94,7 +94,7 @@ vec3 wavenoise(vec2 p, float t){
 
 
 float speed(float f){
-    return smoothstep(0.0,0.5,f)*.7+f*.3;
+    return smoothstep(0.8,1.0,f)*.7+f*.3;
 }
 
 //------//
@@ -112,9 +112,10 @@ void main(){
     vec2 gridi = floor(p*40.)/40.;
 
     float ms = t_ms/1000.;
-    float sec = (t_sec-1.+speed(ms))/60.;
-    float min = (t_min-1.+sec)/60.;
-    float hour = (t_hour-1.+min)/12.;
+    float sec = (t_sec+speed(ms))/60.;
+    float sec_smooth = (t_sec+(ms))/60.;
+    float min = (t_min+sec)/60.;
+    float hour = (t_hour+min)/12.;
 
     float ms_angle = ms*TWOPI;
     float sec_angle = sec*TWOPI;
@@ -126,15 +127,15 @@ void main(){
     float min_swipe = modPI(min_angle+TWOPI-angle)/TWOPI;
     float hour_swipe = modPI(hour_angle+TWOPI-angle)/TWOPI;
 
-    vec3 f1 = wavenoise(p, 100.*sec);
-    vec3 f2 = wavenoise(p, 100.*(sec-1.));
+    vec3 f1 = wavenoise(p, 100.*sec_smooth);
+    vec3 f2 = wavenoise(p, 100.*(sec_smooth-1.));
     vec3 f = mix(f1, f2, sec);
 
     
     float nf = f.x /(length(f.yz) +1.) + sec_swipe + min_swipe*1. + hour_swipe*2.;
     nf = mix(0., nf, length(p)*.5);
 
-    float ff = fract(nf-sec);
+    float ff = fract(nf-sec*2.);
 
     float balls = smoothstep(ff-0.1,ff+0.1,length(grid-.5));
     vec3 color = mix(
