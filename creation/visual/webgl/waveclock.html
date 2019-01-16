@@ -134,6 +134,8 @@ void main(){
     
     float nf = f.x /(length(f.yz) +1.) + sec_swipe + min_swipe*1. + hour_swipe*2.;
     nf = mix(0., nf, length(p)*.5);
+    
+    nf-=50./(length(p-mousep)+10.);
 
     float ff = fract(nf-sec*2.);
 
