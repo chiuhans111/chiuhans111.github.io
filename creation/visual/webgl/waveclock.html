@@ -12,7 +12,7 @@
             color: white;
         }
         h1{
-            text-shadow: 0px 8px 24px #00000060;
+            text-shadow: 0px 8px 24px #000000A0;
         }
     </style>
 </head>
@@ -94,7 +94,7 @@ vec3 wavenoise(vec2 p, float t){
 
 
 float speed(float f){
-    return smoothstep(0.,1.,f)*.5+f*.5;
+    return smoothstep(0.0,0.5,f)*.7+f*.3;
 }
 
 //------//
@@ -108,12 +108,13 @@ void main(){
     vec2 mousep = mouse.yx*u_resize.yx;
     float angle = modPI(atan(p.y, p.x)+TWOPI);
 
-    vec2 grid = fract(p*2.);
+    vec2 grid = fract(p*40.);
+    vec2 gridi = floor(p*40.)/40.;
 
     float ms = t_ms/1000.;
-    float sec = (t_sec+speed(ms))/60.;
-    float min = (t_min+sec)/60.;
-    float hour = (t_hour+min)/12.;
+    float sec = (t_sec-1.+speed(ms))/60.;
+    float min = (t_min-1.+sec)/60.;
+    float hour = (t_hour-1.+min)/12.;
 
     float ms_angle = ms*TWOPI;
     float sec_angle = sec*TWOPI;
@@ -129,10 +130,20 @@ void main(){
     vec3 f2 = wavenoise(p, 100.*(sec-1.));
     vec3 f = mix(f1, f2, sec);
 
-    float nf = f.x * length(f.yz) /10. + sec_swipe + min_swipe*0.75 + hour_swipe*1.5;
-    nf = mix(0., nf, length(p));
-    vec3 color = vec3(fract(nf-sec*20.) );
+    
+    float nf = f.x /(length(f.yz) +1.) + sec_swipe + min_swipe*1. + hour_swipe*2.;
+    nf = mix(0., nf, length(p)*.5);
 
+    float ff = fract(nf-sec);
+
+    float balls = smoothstep(ff-0.1,ff+0.1,length(grid-.5));
+    vec3 color = mix(
+        vec3(0,0,0),
+        vec3(hour_swipe,min_swipe,sec_swipe),
+        balls
+    );
+
+    // color = vec3(balls);
 
     gl_FragColor = vec4(color, 1);
 }
@@ -140,9 +151,14 @@ void main(){
     </script>
     <script src="./js/glsl2d.js"></script>
     <script>
+        function nf(num) {
+            num = num.toString()
+            while (num.length < 2) num = '0' + num;
+            return num;
+        }
         var time_dom = document.getElementById('time')
         function Update() {
-            time_dom.textContent = time.hour + ':' + time.min + ':' + time.sec
+            time_dom.textContent = time.hour + ':' + nf(time.min) + ':' + nf(time.sec)
             requestAnimationFrame(Update);
         }
         requestAnimationFrame(Update);
