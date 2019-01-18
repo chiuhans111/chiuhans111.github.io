@@ -17,14 +17,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>WaveNoise</title>
+    <title>WAVE3D</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
     <div class="page">
         <div class="center">
-            <h1>WAVENOISE</h1>
+            <h1>WAVE3D</h1>
         </div>
     </div>
     <canvas></canvas>
@@ -42,88 +42,74 @@ void main(){
         
     </script>
     <script id="shader-fragment" type="x-shader/x-fragment">
+// Author: Hans Chiu
+// Title: 3D render using fragment shader
 
-
+#ifdef GL_ES
 precision mediump float;
-varying vec2 vPos;
+#endif
+
 #define PI 3.14159265358979
 #define TWOPI 6.283185307179586
 
-//----------//
-// UNIFORMS //
-//----------//
 
-uniform float time;
-uniform vec2 mouse;
-uniform float now;
 uniform vec2 u_size;
+uniform vec2 mouse;
+uniform float time;
 
-//-----------//
-// FUNCTIONS //
-//-----------//
+varying vec2 vPos;
 
 float modPI(float x){
     return mod(x, TWOPI);
 }
 
-
-vec3 wavenoise(vec2 p, float t){
-    float v = 0.1;
-    float y = 0.;
-    float a = .3;
-    float f = 8.;
-
-    vec2 dd = vec2(0);
-
-    for(int i=0;i<5;i++){
-        float angle = float(i);
-        vec2 k = vec2(cos(angle), sin(angle))*f;
-        float w = v*length(k);
-
-        float xx = modPI(w*t)-dot(k, p)+modPI(angle*34.);
-
-        y+=sin(xx)*a;
-        dd+=cos(xx)*a*k*p;
-
-        a*=0.8;
-        f*=1.12;
-        v*=0.7;
-    }
-    
-    return vec3(y*.5+.5, dd);
+float shape(vec3 p){
+    float r = length(p.xz);
+    if(r>100.) return 0.3;
+    return sin(modPI(r*2.-time*4.))/(r+1.)*2.-p.y;
 }
 
 
-//------//
-// MAIN //
-//------//
 
-void main(){
-    vec2 pixel = (vPos/2.+.5)*u_size;
-    vec2 mousep = (mouse/2.+.5)*u_size;
+void main() {
+    vec2 st = vPos;
+    
+    
+    vec3 cam_pos = vec3(10,sin(modPI(time))*2.+5.,0);
+    vec3 cam_front = normalize(-cam_pos);
+    vec3 up = vec3(0,1,0);
+    vec3 cam_right = cross(cam_front, up);
+    vec3 cam_up = cross(cam_right, cam_front);
+    
+    float fov = sin(modPI(time/2.))*50.+60.; // in degree
+    float fov_w = tan(fov*PI/360.);
+    float fov_h = fov_w*u_size.y/u_size.x;
+    vec3 ray_dir = cam_front+
+        cam_right*st.x*fov_w+
+        cam_up*st.y*fov_h;
+    
+    
+    float min_value = 5.;
+    float l = 0.; //start length
+    vec3 ray_pos = cam_pos;
+    for(int i=0;i<1000;i++){
+        ray_pos = ray_dir*l+cam_pos;
+        float value = shape(ray_pos);
+        value = value*value;
+        if(value<0.003) break;
+        min_value = min(min_value, value);
+        l=l+max(0.01,min(.5,value/8.));
+    }
+    
+    
+    
+    vec3 color = vec3((ray_pos.y+1.)*max(0., 1.-l/30.));
 
-    vec3 f1 = wavenoise(pixel/2000., mod(time, 10.));
-    vec3 f2 = wavenoise(pixel/2000., mod(time, 10.)-10.);
-    vec3 f = mix(f1, f2, mod(time, 10.)/10.);
-    float nf = f.y;
-
-    nf+=50./(length(pixel-mousep)+50.);
-
-    vec3 color = mix(
-        vec3(1),
-        vec3(.95,.2,.1),
-        step(.95,fract(nf*4.))
-    );
-
-
-    gl_FragColor = vec4(color, 1);
+    gl_FragColor = vec4(color,1.0);
 }
         
     </script>
     <script src="./js/glsl2d.js"></script>
-    <script>
-        loopTime = 10;        
-    </script>
 </body>
 
 </html>

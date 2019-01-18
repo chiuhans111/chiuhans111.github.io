@@ -105,12 +105,16 @@ window.addEventListener('mousemove', function (event) {
 })
 
 
+let loopTime = 0;
+
 function Loop() {
 
     //
     // update uniform
     //
-    gl.uniform1f(uniforms.time, performance.now() / 1000 % 10)
+    if (loopTime > 0)
+        gl.uniform1f(uniforms.time, performance.now() / 1000 % loopTime)
+    else  gl.uniform1f(uniforms.time, performance.now() / 1000)
     let date = new Date();
     time.ms = date.getMilliseconds()
     time.sec = date.getSeconds()
