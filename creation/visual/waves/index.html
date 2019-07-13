@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link
+        href="https://fonts.googleapis.com/css?family=Noto+Sans+TC:400,700&display=swap"
+        rel="stylesheet">
+    <title>waves</title>
+    <style>
+        * {
+            margin: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .canvas-container {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            overflow: hidden;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 200px 20px 100px;
+        }
+        .big{
+            font-size: 4em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>HELLO,</h1>
+        <h1 class="big"> I'm Hans!</h1>
+    </div>
+
+    <div class="canvas-container"></div>
+    <script src="./dist/bundle.js"></script>
+</body>
+
+</html>
