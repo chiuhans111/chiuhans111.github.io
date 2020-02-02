@@ -43,6 +43,11 @@
                 x: linspace(0, 2, samples),
                 y: xs.map(x => x[0]),
                 mode: 'lines',
+                fill: 'tozeroy',
+                fillcolor: 'lightyellow',
+                line: {
+                    color: 'darkblue',
+                },
                 name: 'SPECTRUM'
             };
 
@@ -50,6 +55,9 @@
                 x: linspace(0, 2, samples),
                 y: xs.map(x => x[1]),
                 mode: 'lines',
+                line: {
+                    color: 'lightcoral',
+                },
                 name: 'FBG1'
             };
 
@@ -57,32 +65,51 @@
                 x: linspace(0, 2, samples),
                 y: xs.map(x => x[2]),
                 mode: 'lines',
+                line: {
+                    color: 'deepskyblue',
+                },
                 name: 'FBG2'
             };
 
             var data = [trace1, trace2, trace3];
-            if(pxs!=null){
-                
+            if (pxs != null) {
+
                 var trace4 = {
                     x: linspace(0, 2, samples),
                     y: pxs.map(x => x[1]),
                     mode: 'lines',
-                    fill: 'tozeroy',
+                    line: {
+                        color: 'red',
+                    },
                     name: 'predict-FBG1'
                 };
-                
+
                 var trace5 = {
                     x: linspace(0, 2, samples),
                     y: pxs.map(x => x[2]),
                     mode: 'lines',
-                    fill: 'tozeroy',
+                    line: {
+                        color: 'blue',
+                    },
                     name: 'predict-FBG2'
                 };
-                
-                data = [trace2, trace3,trace4,trace5];
-                
+
+                var trace6 = {
+                    x: linspace(0, 2, samples),
+                    y: pxs.map(x => x[0]),
+                    mode: 'lines',
+                    fillcolor: 'lightyellow',
+                    line: {
+                        color: 'darkblue',
+                    },
+                    fill: 'tozeroy',
+                    name: 'predict-spectrum'
+                };
+
+                data = [trace6, trace2, trace3, trace4, trace5,];
+
             }
-                var layout = {
+            var layout = {
                 title,
                 xaxis: { range: [0, 2] },
                 yaxis: { range: [0, 2] },
@@ -108,12 +135,12 @@
                     )
                 ).dataSync()
             }
-            
-            
+
+
             function update() {
                 var xs = getXsFromY(...realY, noise)
-                
-                
+
+
                 var predictY = predict(xs)
                 plot('plot_ground', 'ground truth', xs)
 
