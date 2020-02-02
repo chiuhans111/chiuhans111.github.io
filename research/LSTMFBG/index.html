@@ -106,7 +106,7 @@
                     name: 'predict-spectrum'
                 };
 
-                data = [trace6, trace2, trace3, trace4, trace5,];
+                data = [trace2, trace3, trace4, trace5,];
 
             }
             var layout = {
@@ -122,8 +122,12 @@
                 },
             };
 
+            
+
             Plotly.newPlot(id, data, layout)
         }
+
+        var plot_ground = document.getElementById('plot_ground')
 
         tf.loadLayersModel('./tfjs_model/model.json').then(function (model) {
             console.log('model loaded', model)
@@ -135,35 +139,42 @@
                     )
                 ).dataSync()
             }
-
-
+            
+            var needUpdate = true
+            
             function update() {
+                requestAnimationFrame(update)
+                if(needUpdate==false) return
+                needUpdate = false
                 var xs = getXsFromY(...realY, noise)
 
 
                 var predictY = predict(xs)
-                plot('plot_ground', 'ground truth', xs)
+                plot(plot_ground, 'ground truth', xs)
 
                 var predictXs = getXsFromY(...predictY)
 
                 plot('plot_predict', 'prediction', xs, predictXs)
 
-                requestAnimationFrame(update)
 
             }
 
             update()
 
+
             document.getElementById('FBG1').addEventListener('input', function (e) {
                 realY[0] = +e.target.value
+                needUpdate = true
             })
 
             document.getElementById('FBG2').addEventListener('input', function (e) {
                 realY[1] = +e.target.value
+                needUpdate = true
             })
 
             document.getElementById('NOISE').addEventListener('input', function (e) {
                 noise = +e.target.value
+                needUpdate = true
             })
 
         })
@@ -179,15 +190,15 @@
             return arr;
         }
 
-        function R(x, a, c, w, noise = 0) {
-            return a * Math.exp(-4 * Math.log(2) * ((x - c) / w) ** 2) + Math.random() * noise
+        function R(x, a, c, w) {
+            return a * Math.exp(-4 * Math.log(2) * ((x - c) / w) ** 2) 
         }
 
         function getXsFromY(y0, y1, noise = 0) {
             return linspace(0, 2, samples).map(x => {
-                let a = R(x, 1, y0, 0.2, noise / 2)
-                let b = R(x, 0.5, y1, 0.2, noise / 2)
-                return [a + b, a, b]
+                let a = R(x, 1, y0, 0.2)
+                let b = R(x, 0.5, y1, 0.2)
+                return [a + b+noise*Math.random(), a, b]
             })
         }
 
