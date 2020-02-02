@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.6.0/math.min.js"></script>
+    <script
+        src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <title>LSTM FBG</title>
+</head>
+
+<body>
+    <p>only works with browser support ES6 such as chrome
+    </p>
+    <div id="plot_ground"></div>
+    <input style="width:100%" id="FBG1" type="range" min="0"
+        max="2" step="0.01" value="0.5">
+    <input style="width:100%" id="FBG2" type="range" min="0"
+        max="2" step="0.01" value="0.7">
+    <div id="plot_predict"></div>
+    <script>
+
+        let realY = [0.5, 0.7]
+
+
+        function plot(id, title, xs) {
+            var trace1 = {
+                x: linspace(0, 2, samples),
+                y: xs.map(x => x[0]),
+                mode: 'lines',
+                name: 'SPECTRUM'
+            };
+
+            var trace2 = {
+                x: linspace(0, 2, samples),
+                y: xs.map(x => x[1]),
+                mode: 'lines',
+                name: 'FBG1'
+            };
+
+            var trace3 = {
+                x: linspace(0, 2, samples),
+                y: xs.map(x => x[2]),
+                mode: 'lines',
+                name: 'FBG2'
+            };
+
+            var data = [trace1, trace2, trace3];
+
+            var layout = {
+                title
+            };
+
+            Plotly.newPlot(id, data, layout)
+        }
+
+        tf.loadLayersModel('./tfjs_model/model.json').then(function (model) {
+            console.log('model loaded', model)
+
+            function predict(xs) {
+                return model.predict(
+                    tf.tensor(
+                        [xs.map(x => [x[0]])]
+                    )
+                ).arraySync()[0]
+            }
+
+            function update() {
+                var xs = getXsFromY(...realY)
+
+                plot('plot_ground', 'ground truth', xs)
+
+                var predictY = predict(xs)
+
+                var predictXs = getXsFromY(...predictY)
+
+                plot('plot_predict', 'prediction', predictXs)
+
+                requestAnimationFrame(update)
+
+            }
+
+            update()
+
+            document.getElementById('FBG1').addEventListener('input', function (e) {
+                realY[0] = +e.target.value
+            })
+
+            document.getElementById('FBG2').addEventListener('input', function (e) {
+                realY[1] = +e.target.value
+            })
+
+
+        })
+
+        let samples = 200
+
+        function linspace(startValue, stopValue, cardinality) {
+            var arr = [];
+            var step = (stopValue - startValue) / (cardinality - 1);
+            for (var i = 0; i < cardinality; i++) {
+                arr.push(startValue + (step * i));
+            }
+            return arr;
+        }
+
+        function R(x, a, c, w) {
+            return a * Math.exp(-4 * Math.log(2) * ((x - c) / w) ** 2)
+        }
+
+        function getXsFromY(y0, y1) {
+            return linspace(0, 2, samples).map(x => {
+                let a = R(x, 1, y0, 0.2)
+                let b = R(x, 0.5, y1, 0.2)
+                return [a + b, a, b]
+            })
+        }
+
+    </script>
+</body>
+
+</html>
