@@ -1,0 +1,65 @@
+html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+::selection{
+    background-color: black;
+    color: white;
+    border-radius: 4px;
+}
+
+body {
+    position: relative;
+    padding-right:32px;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-family: "微軟正黑體", consolas, Arial, Helvetica, sans-serif;
+    background-color: white;
+    overflow: auto;
+}
+
+section{
+    width: 100vw;
+}
+
+main,
+#cover {
+    height: 100%;
+}
+
+#cover {
+    display: flex;
+    align-content: flex-end;
+    flex-direction: column-reverse;
+}
+
+#cover {
+    overflow: hidden;
+}
+
+.layout {
+    transition: all .5s;
+    opacity: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    background-color: black;
+    padding: 8px;
+}
+
+.layout:hover {}
+
+.word {
+    display: inline-block;
+    width: 1000px;
+    align-content: flex-end;
+    transition: all 1s;
+    margin: 0;
+    font-size: 0px;
+    word-wrap: none;
+    color: white;
+    /* background-color: rgba(8, 86, 255, 0.4); */
+    border-radius: 4px;
+}
