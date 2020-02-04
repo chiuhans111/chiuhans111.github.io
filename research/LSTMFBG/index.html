@@ -3,11 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.6.0/math.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.6.0/math.min.js"></script>
+    <script
+        src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
     <title>LSTM FBG</title>
     <style>
         .plot {
@@ -22,14 +26,19 @@
     <div class="plot" id="plot_ground"></div>
 
     <div>
-        FBG1:<input style="width:80%;" id="FBG1" type="range" min="0" max="2" step="0.01" value="0.5">
+        FBG1:<input style="width:80%;" id="FBG1"
+            type="range" min="0" max="2" step="0.01"
+            value="0.5">
     </div>
 
     <div>
-        FBG2:<input style="width:80%" id="FBG2" type="range" min="0" max="2" step="0.01" value="0.7">
+        FBG2:<input style="width:80%" id="FBG2" type="range"
+            min="0" max="2" step="0.01" value="0.7">
     </div>
     <div>
-        NOISE:<input style="width:80%" id="NOISE" type="range" min="0" max="1" step="0.01" value="0">
+        NOISE:<input style="width:80%" id="NOISE"
+            type="range" min="0" max="1" step="0.01"
+            value="0">
     </div>
     <div class="plot" id="plot_predict"></div>
     <script>
@@ -122,14 +131,14 @@
                 },
             };
 
-            
+
 
             Plotly.newPlot(id, data, layout)
         }
 
         var plot_ground = document.getElementById('plot_ground')
 
-        tf.loadLayersModel('./tfjs_model/model.json').then(function (model) {
+        tf.loadLayersModel('./tfjs_model/new/model.json').then(function (model) {
             console.log('model loaded', model)
 
             function predict(xs) {
@@ -139,13 +148,14 @@
                     )
                 ).dataSync()
             }
-            
+
             var needUpdate = true
-            
+
             function update() {
-                requestAnimationFrame(update)
-                if(needUpdate==false) return
+
+                if (needUpdate == false) return requestAnimationFrame(update)
                 needUpdate = false
+
                 var xs = getXsFromY(...realY, noise)
 
 
@@ -155,7 +165,7 @@
                 var predictXs = getXsFromY(...predictY)
 
                 plot('plot_predict', 'prediction', xs, predictXs)
-
+                requestAnimationFrame(update)
 
             }
 
@@ -191,14 +201,14 @@
         }
 
         function R(x, a, c, w) {
-            return a * Math.exp(-4 * Math.log(2) * ((x - c) / w) ** 2) 
+            return a * Math.exp(-4 * Math.log(2) * ((x - c) / w) ** 2)
         }
 
         function getXsFromY(y0, y1, noise = 0) {
             return linspace(0, 2, samples).map(x => {
                 let a = R(x, 1, y0, 0.2)
                 let b = R(x, 0.5, y1, 0.2)
-                return [a + b+noise*Math.random(), a, b]
+                return [a + b + noise * Math.random(), a, b]
             })
         }
 
