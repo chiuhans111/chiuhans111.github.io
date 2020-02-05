@@ -125,8 +125,8 @@
     
 
                 data = [trace1, trace5, trace6,trace3, trace4];
-
             }
+
             var layout = {
                 title,
                 xaxis: { range: [0, 2] },
@@ -147,7 +147,7 @@
 
         var plot_ground = document.getElementById('plot_ground')
 
-        tf.loadLayersModel('./tfjs_model/old2/model.json').then(function (model) {
+        tf.loadLayersModel('./tfjs_model/old200/model.json').then(function (model) {
             console.log('model loaded', model)
 
             function predict(xs) {
