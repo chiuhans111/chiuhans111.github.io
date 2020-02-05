@@ -47,7 +47,7 @@
         let noise = 0
 
 
-        function plot(id, title, xs, pxs) {
+        function plot(id, title, xs, py) {
             var trace1 = {
                 x: linspace(0, 2, samples),
                 y: xs.map(x => x[0]),
@@ -81,41 +81,50 @@
             };
 
             var data = [trace1, trace2, trace3];
-            if (pxs != null) {
+            if (py != null) {
 
-                var trace4 = {
-                    x: linspace(0, 2, samples),
-                    y: pxs.map(x => x[1]),
+                trace3 =  {
+                    x: [py[0], py[0]],
+                    y: [1,2],
                     mode: 'lines',
                     line: {
                         color: 'red',
                     },
-                    name: 'predict-FBG1'
+                    name: 'learn-FBG1'
                 };
-
-                var trace5 = {
-                    x: linspace(0, 2, samples),
-                    y: pxs.map(x => x[2]),
+    
+                trace4 =  {
+                    x: [py[1], py[1]],
+                    y: [0.5,2],
                     mode: 'lines',
                     line: {
                         color: 'blue',
                     },
-                    name: 'predict-FBG2'
+                    name: 'learn-FBG2'
                 };
 
-                var trace6 = {
-                    x: linspace(0, 2, samples),
-                    y: pxs.map(x => x[0]),
+                trace5 =  {
+                    x: [realY[0], realY[0]],
+                    y: [0,2],
                     mode: 'lines',
-                    fillcolor: 'lightyellow',
                     line: {
-                        color: 'darkblue',
+                        color: 'lightcoral',
                     },
-                    fill: 'tozeroy',
-                    name: 'predict-spectrum'
+                    name: 'real-FBG1'
                 };
 
-                data = [trace2, trace3, trace4, trace5,];
+                trace6 =  {
+                    x: [realY[1], realY[1]],
+                    y: [0,2],
+                    mode: 'lines',
+                    line: {
+                        color: 'deepskyblue',
+                    },
+                    name: 'real-FBG2'
+                };
+    
+
+                data = [trace1, trace5, trace6,trace3, trace4];
 
             }
             var layout = {
@@ -138,7 +147,7 @@
 
         var plot_ground = document.getElementById('plot_ground')
 
-        tf.loadLayersModel('./tfjs_model/new/model.json').then(function (model) {
+        tf.loadLayersModel('./tfjs_model/old2/model.json').then(function (model) {
             console.log('model loaded', model)
 
             function predict(xs) {
@@ -162,9 +171,9 @@
                 var predictY = predict(xs)
                 plot(plot_ground, 'ground truth', xs)
 
-                var predictXs = getXsFromY(...predictY)
+                //var predictXs = getXsFromY(...predictY)
 
-                plot('plot_predict', 'prediction', xs, predictXs)
+                plot('plot_predict', 'prediction', xs, predictY)
                 requestAnimationFrame(update)
 
             }
