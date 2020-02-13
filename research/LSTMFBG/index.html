@@ -43,6 +43,13 @@
     <div class="plot" id="plot_predict"></div>
     <script>
 
+        let urlParams = new URLSearchParams(window.location.search);
+        let model_name = 'SGD'
+        if(urlParams.has('model')){
+            model_name = urlParams.get('model')
+        }
+
+
         let realY = [0.5, 0.7]
         let noise = 0
 
@@ -83,19 +90,19 @@
             var data = [trace1, trace2, trace3];
             if (py != null) {
 
-                trace3 =  {
+                trace3 = {
                     x: [py[0], py[0]],
-                    y: [1,2],
+                    y: [1, 2],
                     mode: 'lines',
                     line: {
                         color: 'red',
                     },
                     name: 'learn-FBG1'
                 };
-    
-                trace4 =  {
+
+                trace4 = {
                     x: [py[1], py[1]],
-                    y: [0.5,2],
+                    y: [0.5, 2],
                     mode: 'lines',
                     line: {
                         color: 'blue',
@@ -103,9 +110,9 @@
                     name: 'learn-FBG2'
                 };
 
-                trace5 =  {
+                trace5 = {
                     x: [realY[0], realY[0]],
-                    y: [0,2],
+                    y: [0, 2],
                     mode: 'lines',
                     line: {
                         color: 'lightcoral',
@@ -113,18 +120,18 @@
                     name: 'real-FBG1'
                 };
 
-                trace6 =  {
+                trace6 = {
                     x: [realY[1], realY[1]],
-                    y: [0,2],
+                    y: [0, 2],
                     mode: 'lines',
                     line: {
                         color: 'deepskyblue',
                     },
                     name: 'real-FBG2'
                 };
-    
 
-                data = [trace1, trace5, trace6,trace3, trace4];
+
+                data = [trace1, trace5, trace6, trace3, trace4];
             }
 
             var layout = {
@@ -147,13 +154,13 @@
 
         var plot_ground = document.getElementById('plot_ground')
 
-        tf.loadLayersModel('./tfjs_model/old200/model.json').then(function (model) {
+        tf.loadLayersModel(`./tfjs_model/${model_name}/model.json`).then(function (model) {
             console.log('model loaded', model)
 
             function predict(xs) {
                 return model.predict(
                     tf.tensor(
-                        [xs.map(x => [x[0]])]
+                        [xs.map(x => x[0])]
                     )
                 ).dataSync()
             }
@@ -215,8 +222,8 @@
 
         function getXsFromY(y0, y1, noise = 0) {
             return linspace(0, 2, samples).map(x => {
-                let a = R(x, 1, y0, 0.2)
-                let b = R(x, 0.5, y1, 0.2)
+                let a = R(x, 0.5, y0, 0.2)
+                let b = R(x, 1, y1, 0.2)
                 return [a + b + noise * Math.random(), a, b]
             })
         }
