@@ -26,8 +26,8 @@
         border-top-right-radius: 100px;
         border-bottom-right-radius: 100px;
 
-        @include rwd(700px) {
-            width: 10px;
+        @include rwd(600px) {
+            width: 20px;
         }
 
         @include rwd(1000px) {

@@ -4,7 +4,7 @@
 @import "./cover/";
 @import "./project/";
 
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;500;900&family=Noto+Serif+TC:wght@500;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;900&family=Noto+Serif+TC:wght@500;900&display=swap");
 
 body {
     font-family: "Noto Sans TC", "微軟正黑體", "PingFang", sans-serif;
@@ -12,7 +12,7 @@ body {
     font-size: 16px;
     line-height: 1.2;
 
-    @include rwd(400px) {
+    @include rwd(600px) {
         font-size: 20px;
     }
 }
@@ -20,15 +20,20 @@ body {
 h1 {
     font-size: 2em;
     font-weight: 900;
-    padding: 10px 0px;
+    padding: 5px 0px;
 }
 
 h2 {
     font-size: 1em;
-    font-weight: 900;
-    padding: 10px 0px;
+    font-weight: 500;
+    padding: 5px 0px;
 }
 
 p {
     padding: 5px 0px;
+    font-weight: 300;
+}
+
+strong{
+    font-weight: 500;
 }

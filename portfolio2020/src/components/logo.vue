@@ -246,6 +246,7 @@ export default {
           left: -14.29%;
           top: 0%;
           border-bottom-left-radius: 100%;
+          border-top-left-radius: 2px;
         }
       }
 
@@ -269,6 +270,7 @@ export default {
           right: -50%;
           top: 0%;
           border-bottom-right-radius: 100%;
+          border-top-right-radius: 2px;
         }
       }
 
@@ -292,6 +294,7 @@ export default {
           left: -100%;
           top: 0%;
           border-bottom-left-radius: 100%;
+          border-top-left-radius: 2px;
         }
       }
     }

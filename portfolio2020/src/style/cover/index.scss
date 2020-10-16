@@ -24,21 +24,30 @@
     }
 
     &-logo {
-        width: 60px;
+        width: 200px;
+        @include rwd(0, 600px) {
+            width: 100px;
+        }
+
+        @include rwdh(0, 600px) {
+            width: 100px;
+        }
+
+        @include rwd(0, 300px) {
+            width: 60px;
+        }
+
+        @include rwdh(0, 300px) {
+            width: 60px;
+        }
     }
 
     @include rwdh(300px) {
         padding-top: 100px;
-        &-logo {
-            width: 100px;
-        }
     }
 
     @include rwdh(600px) {
         padding-top: 150px;
-        &-logo {
-            width: 200px;
-        }
     }
 
     @include rwdh(1000px) {

@@ -72,9 +72,9 @@
           </div>
 
           <div class="contact-table--item" @click="showContact = false">
-            <div
-              class="contact-title cover-menu--arrow cover-menu--arrow-left"
-            ></div>
+            <div class="contact-title">
+              <div class="cover-menu--arrow cover-menu--arrow-left"></div>
+            </div>
             <div class="contact-desc">BACK</div>
           </div>
         </div>

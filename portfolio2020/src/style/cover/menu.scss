@@ -1,7 +1,8 @@
 @import "./contact.scss";
 
 .cover-menu {
-    @include rwd(700px) {
+    pointer-events: none;
+    @include rwd(400px) {
         position: absolute;
         bottom: 0;
         width: 100%;
@@ -18,10 +19,11 @@
     }
 
     &--item {
+        pointer-events: initial;
         padding: 10px;
-        transition: transform .1s;
+        transition: transform 0.1s;
         cursor: pointer;
-        &:hover{
+        &:hover {
             transform: translate(10px, 0);
         }
     }
