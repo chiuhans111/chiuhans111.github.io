@@ -1,0 +1,67 @@
+@import "./contact.scss";
+
+.cover-menu {
+    @include rwd(700px) {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 30vh;
+        min-height: 230px;
+    }
+
+    &--content {
+        position: relative;
+        left: 100%;
+        transform: translate(-100%, 0);
+        display: inline-block;
+        right: 20px;
+    }
+
+    &--item {
+        padding: 10px;
+        transition: transform .1s;
+        cursor: pointer;
+        &:hover{
+            transform: translate(10px, 0);
+        }
+    }
+
+    overflow: hidden;
+
+    &--arrow {
+        position: relative;
+        height: 40px;
+        width: 40px;
+        background: black;
+        border-radius: 40px;
+        &:before {
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 2px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            content: "";
+        }
+        &:after {
+            position: absolute;
+            display: block;
+            width: 16px;
+            height: 16px;
+            border-top: solid 2px white;
+            border-right: solid 2px white;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            content: "";
+        }
+        &-down {
+            transform: rotate(90deg);
+        }
+        &-left {
+            transform: rotate(180deg);
+        }
+    }
+}

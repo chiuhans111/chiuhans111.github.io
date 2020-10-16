@@ -1,0 +1,79 @@
+.cover-block {
+    position: absolute;
+    z-index: -1;
+    transition: width 1s, height 1s, border-radius 1s;
+    width: 0;
+    height: 0;
+}
+.show .cover-block {
+    &--1 {
+        background: #eee;
+        min-width: 100px;
+        width: 25vw;
+        top: 0;
+        left: 0;
+
+        height: 12.5vh;
+    }
+
+    &--2 {
+        background: #111;
+        width: 10px;
+        height: 40vh;
+
+        bottom: -10px;
+        left: 0;
+        border-top-right-radius: 100px;
+        border-bottom-right-radius: 100px;
+
+        @include rwd(700px) {
+            width: 10px;
+        }
+
+        @include rwd(1000px) {
+            width: 10vw;
+            min-height: 20vw;
+            bottom: -10vw;
+            border-top-right-radius: 12.5vw;
+            border-bottom-right-radius: 12.5vw;
+        }
+    }
+
+    &--3 {
+        background: #111;
+        width: 10px;
+        height: 10px;
+
+        top: 0;
+        right: 0;
+        border-bottom-left-radius: 100px;
+
+        @include rwdh(300px) {
+            width: 100px;
+            height: 30vh;
+        }
+
+        @include rwd(500px) {
+            width: 20vw;
+            border-bottom-left-radius: 20vw;
+        }
+    }
+
+    &--4 {
+        background: #eee;
+        width: 10px;
+        height: 10px;
+
+        bottom: 0;
+        right: 0;
+
+        @include rwdh(300px) {
+            height: 20vh;
+        }
+
+        @include rwd(400px) {
+            width: 100px;
+            height: 20vh;
+        }
+    }
+}

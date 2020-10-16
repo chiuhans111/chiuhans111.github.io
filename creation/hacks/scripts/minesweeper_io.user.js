@@ -105,7 +105,7 @@ function SET(x, y, bomb) {
 let SETQUEUE = []
 function QUEUESET(x, y, bomb) {
     SETQUEUE.push([x, y, bomb])
-    window.changeName(`           `, Math.floor(Math.random() * 248) + 12)
+    // window.changeName(`           `, Math.floor(Math.random() * 248) + 12)
     SET(...SETQUEUE.shift())
 }
 
@@ -179,7 +179,7 @@ function UPDATE() {
 
     setTimeout(() => {
         UPDATE()
-    }, 0);
+    }, 1000);
 
 }
 

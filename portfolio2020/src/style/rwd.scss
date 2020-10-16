@@ -1,0 +1,24 @@
+@mixin rwd($min, $max: 0) {
+    @if $max != 0 {
+        @media all and (min-width: $min) and (max-width: $max) {
+            @content;
+        }
+    } @else {
+        @media all and (min-width: $min) {
+            @content;
+        }
+    }
+}
+
+
+@mixin rwdh($min, $max: 0) {
+    @if $max != 0 {
+        @media all and (min-height: $min) and (max-height: $max) {
+            @content;
+        }
+    } @else {
+        @media all and (min-height: $min) {
+            @content;
+        }
+    }
+}

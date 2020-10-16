@@ -1,0 +1,57 @@
+@import "./block.scss";
+@import "./menu.scss";
+
+.cover {
+    min-height: 100vh;
+    position: relative;
+
+    margin-bottom: 100px;
+
+    &-desc {
+        margin-top: 20px;
+        max-width: 340px;
+    }
+    &-desc,
+    &-menu {
+        opacity: 0;
+        transform: translate(0, 20px);
+        transition: opacity 1s, transform 1s;
+        transition-delay: 0.5s;
+    }
+
+    &-menu {
+        transition-delay: 1s;
+    }
+
+    &-logo {
+        width: 60px;
+    }
+
+    @include rwdh(300px) {
+        padding-top: 100px;
+        &-logo {
+            width: 100px;
+        }
+    }
+
+    @include rwdh(600px) {
+        padding-top: 150px;
+        &-logo {
+            width: 200px;
+        }
+    }
+
+    @include rwdh(1000px) {
+        padding-top: 20vh;
+    }
+}
+
+.show {
+    .cover {
+        &-desc,
+        &-menu {
+            opacity: 1;
+            transform: initial;
+        }
+    }
+}
