@@ -4,7 +4,7 @@
     <section
       :class="{
         cover: true,
-        show: mounted,
+        show: mounted && !showContact,
       }"
     >
       <div class="content">
@@ -108,7 +108,7 @@
     <section>
       <div class="content">
         <h1>經歷</h1>
-        <h2>experience</h2>
+        <h2>Experience</h2>
         <br />
         <p>超過6年的應用程式開發，對C#、Python、網頁應用均有涉略。</p>
         <p>
