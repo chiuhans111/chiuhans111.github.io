@@ -1,5 +1,6 @@
 <template>
   <div>
+    <background></background>
     <section
       :class="{
         cover: true,
@@ -160,9 +161,11 @@
 
 <script>
 import logo from "../components/logo";
+import background from "../components/background";
 export default {
   components: {
     logo,
+    background,
   },
   data() {
     return {

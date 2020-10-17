@@ -15,6 +15,12 @@ body {
     @include rwd(600px) {
         font-size: 20px;
     }
+    scroll-behavior: smooth;
+}
+
+*::selection {
+    background: black;
+    color: white;
 }
 
 h1 {
@@ -34,6 +40,12 @@ p {
     font-weight: 300;
 }
 
-strong{
+strong {
     font-weight: 500;
+}
+
+a {
+    color: black;
+    font-weight: 500;
+    text-decoration: none;
 }
