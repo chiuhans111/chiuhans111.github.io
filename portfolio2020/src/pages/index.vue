@@ -83,6 +83,26 @@
     </section>
     <section>
       <div class="content">
+        <h1>ABOUT ME</h1>
+        <h2>關於我</h2>
+        <br />
+        <p>
+          A student who loves animation, math, physics, optics, art, music...
+          with over 5k followers on twitter.
+        </p>
+
+        <p>
+          Currently working on machine learning project in optical signal
+          processing laboratory at NTUT.
+        </p>
+      </div>
+    </section>
+
+    <br />
+    <br />
+    <br />
+    <!-- <section>
+      <div class="content">
         <h1>我是誰</h1>
         <h2>Who am I?</h2>
         <br />
@@ -125,17 +145,16 @@
         </p>
       </div>
     </section>
-    <hr />
+    <hr /> -->
 
     <section class="project" id="project">
       <div class="content">
-        <h1>專案</h1>
-        <h2>Projects</h2>
+        <h1>PROJECT</h1>
+        <h2>專案</h2>
         <br />
-        <p>敬請期待</p>
-        <p>Stay tuned</p>
+        <projects></projects>
         <br />
-        <p>
+        <!-- <p>
           Twitter :
           <a href="https://twitter.com/chiu_hans" target="blank">@chiu_hans</a>
         </p>
@@ -148,7 +167,7 @@
           <a href="https://github.com/chiuhans111" target="blank"
             >chiuhans111</a
           >
-        </p>
+        </p> -->
       </div>
     </section>
     <footer>
@@ -162,10 +181,12 @@
 <script>
 import logo from "../components/logo";
 import background from "../components/background";
+import projects from "../components/projects";
 export default {
   components: {
     logo,
     background,
+    projects,
   },
   data() {
     return {

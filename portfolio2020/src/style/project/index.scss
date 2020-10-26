@@ -1,3 +1,84 @@
 .project {
     min-height: 100vh;
+
+    img {
+        width: 100%;
+        height: auto;
+        transition: all 0.5s;
+    }
+    &-fields {
+        border: solid 1px #111;
+        border-radius: 10px;
+    }
+
+    &-field {
+        font-size: 0.75em;
+        display: inline-block;
+        color: black;
+        padding: 6px 8px;
+        margin: 5px;
+        border-radius: 10px;
+
+        &:hover {
+            color: black;
+            background-color: #eee;
+        }
+    }
+
+    &-table {
+        margin: 0px -10px;
+        &_container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
+
+    &-item {
+        cursor: pointer;
+        width: 100%;
+
+        &_image {
+            overflow: hidden;
+        }
+
+        &:hover {
+            img {
+                transform: scale(1.1);
+            }
+        }
+
+        @include rwd(600px) {
+            width: 50%;
+        }
+
+        @include rwd(1600px) {
+            width: 33.33%;
+        }
+
+        @include rwd(2400px) {
+            width: 25%;
+        }
+
+        padding: 10px;
+        margin: 10px 0px;
+
+        &_fields {
+            margin: -3px;
+        }
+
+        &_field {
+            font-size: 0.5em;
+            display: inline-block;
+            background-color: #111;
+            color: #eee;
+            padding: 3px 5px;
+            margin: 0px 3px;
+            border-radius: 10px;
+        }
+
+        &_time {
+            font-size: 0.5em;
+            margin: 2px 0 -5px;
+        }
+    }
 }
