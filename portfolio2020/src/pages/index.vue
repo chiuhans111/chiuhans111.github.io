@@ -71,6 +71,18 @@
             <div class="contact-title">GITHUB</div>
             <div class="contact-desc">chiuhans111</div>
           </div>
+          
+          <div
+            class="contact-table--item"
+            @click="
+              window.open(
+                'https://www.youtube.com/channel/UCYI-hDchBq61kY9RLCD7vzw'
+              )
+            "
+          >
+            <div class="contact-title">YOUTUBE</div>
+            <div class="contact-desc">Hans Chiu</div>
+          </div>
 
           <div class="contact-table--item" @click="showContact = false">
             <div class="contact-title">
