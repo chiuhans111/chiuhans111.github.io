@@ -95,7 +95,7 @@ export default {
       }
     },
     update() {
-      console.log(window.scrollY);
+      // console.log(window.scrollY);
       this.scrollV = window.scrollY - this.scroll;
       this.scroll = window.scrollY;
       if (this.run) requestAnimationFrame(this.update);
