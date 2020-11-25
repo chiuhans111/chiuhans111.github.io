@@ -21,7 +21,7 @@
               <img :src="project.covers['404']" alt="" />
             </div>
             <div class="project-item_time">
-              {{ new Date(project.published_on).toDateString() }}
+              {{ new Date(project.published_on*1000).toDateString() }}
             </div>
             <h2>
               {{ project.name }}
