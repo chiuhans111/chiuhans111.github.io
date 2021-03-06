@@ -100,7 +100,7 @@
         <br />
         <p>
           A student who loves animation, math, physics, optics, art, music...
-          with over 6.6k followers on twitter.
+          with over 6.8k followers on twitter.
         </p>
 
         <p>
