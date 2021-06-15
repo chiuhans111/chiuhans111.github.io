@@ -100,12 +100,10 @@
         <br />
         <p>
           A student who loves animation, math, physics, optics, art, music...
-          with over 6.8k followers on twitter.
+          with over 7k followers on twitter.
         </p>
-
         <p>
-          Currently working on machine learning project in optical signal
-          processing laboratory at NTUT.
+          Currently working on optic simulations in modern nanophotonics lab at NTUT.
         </p>
       </div>
     </section>
