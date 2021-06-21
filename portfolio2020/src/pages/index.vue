@@ -118,7 +118,7 @@
         <br />
         <p>
           本名邱柏翰，興趣廣泛，橫跨物理、光學、動畫、程式設計、藝術、音樂等。也長期在
-          twitter 上分享作品，有超過5千追隨者。
+          twitter 上分享作品，有超過7千追隨者。
         </p>
         <p>
           I am a student who loves animation, math, physics, optics, art,
