@@ -1,17 +1,17 @@
 <template>
   <div>
     <background></background>
-    <section
-      :class="{
-        cover: true,
-        show: mounted && !showContact,
-      }"
-    >
+    <section :class="{
+      cover: true,
+      show: mounted && !showContact,
+    }">
       <div class="content">
-        <div class="cover-logo"><logo></logo></div>
+        <div class="cover-logo">
+          <logo></logo>
+        </div>
         <div class="cover-desc">
           <h1>
-            My name is <br />
+            Hi, I am<br />
             Hans Chiu.
           </h1>
           <p>Animation, Programming, Physics.</p>
@@ -21,24 +21,26 @@
       <div class="cover-menu">
         <div class="content">
           <div class="cover-menu--content">
-            <div class="cover-menu--item" @click="showContact = true">
+            <div class="cover-menu--item"
+              @click="showContact = true">
               <div class="cover-menu--title">
                 <h2>CONTACT 聯絡</h2>
               </div>
-              <div class="cover-menu--arrow cover-menu--arrow-right"></div>
+              <div
+                class="cover-menu--arrow cover-menu--arrow-right">
+              </div>
             </div>
-            <div
-              class="cover-menu--item"
-              @click="
-                document.getElementById('project').scrollIntoView({
-                  behavior: 'smooth',
-                })
-              "
-            >
+            <div class="cover-menu--item" @click="
+              document.getElementById('project').scrollIntoView({
+                behavior: 'smooth',
+              })
+            ">
               <div class="cover-menu--title">
                 <h2>PROJECT 專案</h2>
               </div>
-              <div class="cover-menu--arrow cover-menu--arrow-down"></div>
+              <div
+                class="cover-menu--arrow cover-menu--arrow-down">
+              </div>
             </div>
           </div>
         </div>
@@ -50,43 +52,37 @@
 
       <div class="cover-contact" :class="{ showContact }">
         <div class="contact-table">
-          <div
-            class="contact-table--item"
-            @click="window.open('https://twitter.com/chiu_hans')"
-          >
+          <div class="contact-table--item"
+            @click="window.open('https://twitter.com/chiu_hans')">
             <div class="contact-title">TWITTER</div>
             <div class="contact-desc">@chiu_hans</div>
           </div>
-          <div
-            class="contact-table--item"
-            @click="window.open('https://www.behance.net/hanschiu')"
-          >
+          <div class="contact-table--item"
+            @click="window.open('https://www.behance.net/hanschiu')">
             <div class="contact-title">BEHANCE</div>
             <div class="contact-desc">hanschiu</div>
           </div>
-          <div
-            class="contact-table--item"
-            @click="window.open('https://github.com/chiuhans111')"
-          >
+          <div class="contact-table--item"
+            @click="window.open('https://github.com/chiuhans111')">
             <div class="contact-title">GITHUB</div>
             <div class="contact-desc">chiuhans111</div>
           </div>
-          
-          <div
-            class="contact-table--item"
-            @click="
-              window.open(
-                'https://www.youtube.com/channel/UCYI-hDchBq61kY9RLCD7vzw'
-              )
-            "
-          >
+
+          <div class="contact-table--item" @click="
+            window.open(
+              'https://www.youtube.com/channel/UCYI-hDchBq61kY9RLCD7vzw'
+            )
+          ">
             <div class="contact-title">YOUTUBE</div>
             <div class="contact-desc">Hans Chiu</div>
           </div>
 
-          <div class="contact-table--item" @click="showContact = false">
+          <div class="contact-table--item"
+            @click="showContact = false">
             <div class="contact-title">
-              <div class="cover-menu--arrow cover-menu--arrow-left"></div>
+              <div
+                class="cover-menu--arrow cover-menu--arrow-left">
+              </div>
             </div>
             <div class="contact-desc">BACK</div>
           </div>
@@ -99,11 +95,14 @@
         <h2>關於我</h2>
         <br />
         <p>
-          A student who loves animation, math, physics, optics, art, music...
-          with over 7k followers on twitter.
+          Modern nanophotonics lab student who likes to
+          bring physics, optics, math, and programming into
+          the 3D world, with over 10k followers on twitter.
         </p>
         <p>
-          Currently working on optic simulations in modern nanophotonics lab at NTUT.
+          Currently working on optics
+          design/simulation/optimization for augmented
+          reality display.
         </p>
       </div>
     </section>
@@ -189,9 +188,9 @@
 </template>
 
 <script>
-import logo from "../components/logo";
-import background from "../components/background";
-import projects from "../components/projects";
+import logo from "../components/logo"
+import background from "../components/background"
+import projects from "../components/projects"
 export default {
   components: {
     logo,
@@ -204,14 +203,14 @@ export default {
       showContact: false,
       window,
       document,
-    };
+    }
   },
   mounted() {
     setTimeout(() => {
-      this.mounted = true;
-    }, 0);
+      this.mounted = true
+    }, 0)
   },
-};
+}
 </script>
 
 <style>
