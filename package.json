@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "vue": "^2.6.10"
-  }
-}
