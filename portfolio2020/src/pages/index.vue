@@ -22,6 +22,15 @@
         <div class="content">
           <div class="cover-menu--content">
             <div class="cover-menu--item"
+              @click="window.open('https://chiuhans111.github.io/resume/', '_blank', 'noreferrer')">
+              <div class="cover-menu--title">
+                <h2>RESUME 履歷</h2>
+              </div>
+              <div
+                class="cover-menu--arrow cover-menu--arrow-right">
+              </div>
+            </div>
+            <div class="cover-menu--item"
               @click="showContact = true">
               <div class="cover-menu--title">
                 <h2>CONTACT 聯絡</h2>

@@ -195,7 +195,7 @@ export default {
     addEventListener("touchmove", this.touchmove);
     addEventListener("touchend", this.touchmove);
   },
-  destroyed() {
+  unmounted() {
     this.run = false;
     removeEventListener("resize", this.resize);
     removeEventListener("mousemove", this.mousemove);
