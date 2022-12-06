@@ -6,7 +6,7 @@
   "dependencies": {
     "@babel/preset-env": "^7.5.4",
     "raw-loader": "^3.0.0",
-    "three": "^0.106.2",
+    "three": "^0.137.0",
     "webpack": "^4.35.3",
     "webpack-cli": "^3.3.5"
   },
