@@ -1,9 +1,10 @@
 .cover-block {
     position: absolute;
     z-index: -1;
-    transition: width 1s, height 1s, border-radius 1s;
+    transition: opacity 1.2s, width 1s, height 1s, border-radius 1s;
     width: 0;
     height: 0;
+    opacity: 0;
 
     &--1 {
         background: #eee;
@@ -34,10 +35,12 @@
 }
 
 .show .cover-block {
+    opacity: 1;
     &--1 {
         min-width: 100px;
         width: 25vw;
         height: 12.5vh;
+        transition-delay: 0.2s;
     }
 
     &--2 {
@@ -56,6 +59,7 @@
             border-top-right-radius: 12.5vw;
             border-bottom-right-radius: 12.5vw;
         }
+        transition-delay: 0.3s;
     }
 
     &--3 {
@@ -73,6 +77,7 @@
             width: 20vw;
             border-bottom-left-radius: 20vw;
         }
+        transition-delay: 0.4s;
     }
 
     &--4 {
@@ -87,5 +92,6 @@
             width: 100px;
             height: 20vh;
         }
+        transition-delay: 0.5s;
     }
 }

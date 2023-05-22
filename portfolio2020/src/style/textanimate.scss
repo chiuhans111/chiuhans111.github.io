@@ -1,0 +1,36 @@
+.text-animate {
+    &-line {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+    }
+
+    &-wrap {
+        position: relative;
+    }
+    &-item1 {
+        color: transparent;
+    }
+
+    &-item2 {
+        transition: transform 0.5s ease-out;
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translate(0, 100%);
+        pointer-events: none;
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none; /* Standard syntax */
+    }
+}
+
+.show{
+    .text-animate {
+        &-item2 {
+            transform: translate(0, 0);
+
+        }
+    }
+}

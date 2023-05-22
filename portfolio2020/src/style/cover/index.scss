@@ -11,12 +11,16 @@
         margin-top: 20px;
         max-width: 340px;
     }
-    &-desc,
-    &-menu {
+    &-menu--item {
         opacity: 0;
         transform: translate(0, 20px);
         transition: opacity 1s, transform 1s;
-        transition-delay: 0.5s;
+
+        @for $i from 1 through 5 {
+            &:nth-child(#{$i}) {
+                transition-delay: $i * 0.2s + 0.5s;
+            }
+        }
     }
 
     &-menu {
@@ -57,8 +61,7 @@
 
 .show {
     .cover {
-        &-desc,
-        &-menu {
+        &-menu--item {
             opacity: 1;
             transform: initial;
         }

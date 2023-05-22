@@ -63,7 +63,7 @@ export default {
 
     @for $i from 1 through 13 {
       .element:nth-child(#{$i}) {
-        transition-delay: $i * 0.05s;
+        transition-delay: $i * 0.02s;
       }
     }
   }
