@@ -94,14 +94,9 @@
         <h2>關於我</h2>
         <br />
         <p>
-          Modern nanophotonics lab student who likes to
-          bring physics, optics, math, and programming into
-          the 3D world, with over 11k followers on twitter.
-        </p>
-        <p>
-          Currently working on optics
-          design/simulation/optimization for augmented
-          reality display.
+          Optics is my life. Designer. 
+          <br>
+          Programmer. 3D Artist. Blender3D enthusiast.
         </p>
       </div>
     </section>

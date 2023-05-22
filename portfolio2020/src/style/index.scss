@@ -27,18 +27,18 @@ body {
 h1 {
     font-size: 2em;
     font-weight: 900;
-    padding: 5px 0px;
+    margin: 5px 0px;
 }
 
 h2 {
     font-size: 1em;
     font-weight: 500;
-    padding: 5px 0px;
+    margin: 5px 0px;
 }
 
 p {
-    padding: 5px 0px;
     font-weight: 300;
+    line-height: 1.5;
 }
 
 strong {
@@ -51,8 +51,8 @@ a {
     text-decoration: none;
 }
 
-footer{
-    a{
-        color: white
+footer {
+    a {
+        color: white;
     }
 }
