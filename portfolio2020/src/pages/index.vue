@@ -106,7 +106,7 @@
         <p>
           Modern nanophotonics lab student who likes to
           bring physics, optics, math, and programming into
-          the 3D world, with over 10k followers on twitter.
+          the 3D world, with over 11k followers on twitter.
         </p>
         <p>
           Currently working on optics
