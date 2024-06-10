@@ -56,6 +56,10 @@
 
       <div class="cover-contact" :class="{ showContact }">
         <div class="contact-table">
+          <div class="contact-table--item" @click="window.open('https://www.linkedin.com/in/chiuhans/')">
+            <div class="contact-title">LinkedIn</div>
+            <div class="contact-desc">@chiuhans</div>
+          </div>
           <div class="contact-table--item" @click="window.open('https://twitter.com/chiu_hans')">
             <div class="contact-title">TWITTER</div>
             <div class="contact-desc">@chiu_hans</div>
@@ -94,9 +98,7 @@
         <h2>關於我</h2>
         <br />
         <p>
-          Optics is my life. Designer. 
-          <br>
-          Programmer. 3D Artist. Blender3D enthusiast.
+          Optical engineer, Programmer, 3D Artist. Blender3D enthusiast.
         </p>
       </div>
     </section>

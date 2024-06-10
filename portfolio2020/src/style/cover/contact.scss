@@ -18,10 +18,10 @@
 
     .contact-table {
         position: absolute;
-        font-size: 2em;
+        font-size: 1.5em;
 
         @include rwdh(0, 300px) {
-            font-size: 1em;
+            font-size: 0.75em;
         }
         width: 100%;
         height: 100%;
@@ -31,9 +31,9 @@
 
         justify-content: center;
 
-        @for $i from 1 through 5 {
+        @for $i from 1 through 6 {
             &--item:nth-child(#{$i}) {
-                transition-delay: $i * 0.05s;
+                transition-delay: $i * 0.04s;
             }
         }
 
@@ -51,7 +51,7 @@
             cursor: pointer;
             width: 0;
             overflow: hidden;
-            height: 20%;
+            height: 16.666%;
             flex-shrink: 0;
             flex-grow: 0;
             background-color: white;
