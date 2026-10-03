@@ -1,0 +1,58 @@
+@import "./reset.scss";
+@import "./rwd.scss";
+@import "./layout.scss";
+@import "./cover/";
+@import "./project/";
+@import "./textanimate.scss";
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;900&family=Noto+Serif+TC:wght@500;900&display=swap");
+
+body {
+    font-family: "Noto Sans TC", "微軟正黑體", "PingFang", sans-serif;
+    font-weight: 100;
+    font-size: 16px;
+    line-height: 1.2;
+
+    @include rwd(600px) {
+        font-size: 20px;
+    }
+    scroll-behavior: smooth;
+}
+
+*::selection {
+    background: black;
+    color: white;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: 900;
+    margin: 5px 0px;
+}
+
+h2 {
+    font-size: 1em;
+    font-weight: 500;
+    margin: 5px 0px;
+}
+
+p {
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+strong {
+    font-weight: 500;
+}
+
+a {
+    color: black;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+footer {
+    a {
+        color: white;
+    }
+}

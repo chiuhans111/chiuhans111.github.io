@@ -1,0 +1,21 @@
+.content {
+    position: relative;
+    margin: auto;
+    max-width: 600px;
+    padding: 20px;
+
+    @include rwd(1200px) {
+        max-width: 50vw;
+    }
+}
+
+footer {
+    font-size: 0.8em;
+    background-color: #111;
+    color: #eee;
+}
+
+hr {
+    margin: 100px;
+    border: solid 2px #eee;
+}

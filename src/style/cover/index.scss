@@ -1,0 +1,70 @@
+@import "./block.scss";
+@import "./menu.scss";
+@import "./contact.scss";
+
+.cover {
+    min-height: 100vh;
+    position: relative;
+
+    margin-bottom: 100px;
+
+    &-desc {
+        margin-top: 20px;
+        max-width: 340px;
+    }
+    &-menu--item {
+        opacity: 0;
+        transform: translate(0, 20px);
+        transition: opacity 1s, transform 1s;
+
+        @for $i from 1 through 5 {
+            &:nth-child(#{$i}) {
+                transition-delay: $i * 0.2s + 0.5s;
+            }
+        }
+    }
+
+    &-menu {
+        transition-delay: 1s;
+    }
+
+    &-logo {
+        width: 200px;
+        @include rwd(0, 600px) {
+            width: 100px;
+        }
+
+        @include rwdh(0, 600px) {
+            width: 100px;
+        }
+
+        @include rwd(0, 300px) {
+            width: 60px;
+        }
+
+        @include rwdh(0, 300px) {
+            width: 60px;
+        }
+    }
+
+    @include rwdh(300px) {
+        padding-top: 100px;
+    }
+
+    @include rwdh(600px) {
+        padding-top: 150px;
+    }
+
+    @include rwdh(1000px) {
+        padding-top: 20vh;
+    }
+}
+
+.show {
+    .cover {
+        &-menu--item {
+            opacity: 1;
+            transform: initial;
+        }
+    }
+}
