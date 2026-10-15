@@ -1,0 +1,12 @@
+{
+  "name": "tictactoe",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack ./complex/index.js -o ./complex/bundle.js"
+  },
+  "dependencies": {
+    "benchmark": "^2.1.4"
+  }
+}

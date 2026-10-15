@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117194707-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-117194707-1');
+    </script>
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WaveNoise</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="page">
+        <div class="center">
+            <h1>WAVENOISE</h1>
+        </div>
+    </div>
+    <canvas></canvas>
+
+    <script id="shader-vertex" type="x-shader/x-vertex">
+precision mediump float;
+
+attribute vec3 vertPosition;
+varying vec2 vPos;
+
+void main(){
+    vPos = vertPosition.xy;
+    gl_Position = vec4(vertPosition, 1);
+}
+        
+    </script>
+    <script id="shader-fragment" type="x-shader/x-fragment">
+
+
+precision mediump float;
+varying vec2 vPos;
+#define PI 3.14159265358979
+#define TWOPI 6.283185307179586
+
+//----------//
+// UNIFORMS //
+//----------//
+
+uniform float time;
+uniform vec2 mouse;
+uniform float now;
+uniform vec2 u_size;
+
+//-----------//
+// FUNCTIONS //
+//-----------//
+
+float modPI(float x){
+    return mod(x, TWOPI);
+}
+
+
+vec3 wavenoise(vec2 p, float t){
+    float v = 0.1;
+    float y = 0.;
+    float a = .3;
+    float f = 8.;
+
+    vec2 dd = vec2(0);
+
+    for(int i=0;i<5;i++){
+        float angle = float(i);
+        vec2 k = vec2(cos(angle), sin(angle))*f;
+        float w = v*length(k);
+
+        float xx = modPI(w*t)-dot(k, p)+modPI(angle*34.);
+
+        y+=sin(xx)*a;
+        dd+=cos(xx)*a*k*p;
+
+        a*=0.8;
+        f*=1.12;
+        v*=0.7;
+    }
+    
+    return vec3(y*.5+.5, dd);
+}
+
+
+//------//
+// MAIN //
+//------//
+
+void main(){
+    vec2 pixel = (vPos/2.+.5)*u_size;
+    vec2 mousep = (mouse/2.+.5)*u_size;
+
+    vec3 f1 = wavenoise(pixel/2000., mod(time, 10.));
+    vec3 f2 = wavenoise(pixel/2000., mod(time, 10.)-10.);
+    vec3 f = mix(f1, f2, mod(time, 10.)/10.);
+    float nf = f.y;
+
+    nf+=50./(length(pixel-mousep)+50.);
+
+    vec3 color = mix(
+        vec3(1),
+        vec3(.95,.2,.1),
+        step(.95,fract(nf*4.))
+    );
+
+
+    gl_FragColor = vec4(color, 1);
+}
+        
+    </script>
+    <script src="./js/glsl2d.js"></script>
+    <script>
+        loopTime = 10;        
+    </script>
+</body>
+
+</html>

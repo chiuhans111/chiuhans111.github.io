@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>NSYSU PASS</title>
+</head>
+<style>
+    body {
+        background-color: black;
+    }
+
+    img {
+        display: block;
+        margin: auto;
+        margin-top: 20px;
+    }
+
+    input {
+        width: 100%;
+        font-size: 24px;
+    }
+</style>
+
+<body>
+    <script src="nsysupass.js"></script>
+    <script>
+        debugmode = true;
+        // main function call to process
+        getImg(getUrl()).then(process).then(result => {
+            console.log('possibles:', result.join(' , '))
+        });
+    </script>
+</body>
+
+</html>

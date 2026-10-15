@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+</body>
+<script src="./index.js"></script>
+<script>
+
+    function print(state, highlight, target = document.body) {
+        var div = document.createElement('div')
+        target.appendChild(div)
+
+        var info = document.createElement('p')
+        div.appendChild(info)
+
+        var table = document.createElement('table')
+        div.appendChild(table)
+
+
+
+        var p = window.peak(nstate)
+        var node = getNode(nstate.toHash().h)
+
+        info.textContent = state.win
+        if (p[highlight] != undefined) {
+            info.innerHTML += "<br>win rate:" + p[highlight].value
+            info.innerHTML += "<br>win move:" + highlight
+            info.innerHTML += "<br>win hash:" + p[highlight].child.hash
+            info.innerHTML += "<br>WIN:" + node.win
+            info.innerHTML += "<br>WIN predict:" + node.winpredict
+            info.innerHTML += "<br>hash:" + nstate.toHash().h
+            node = getNode(p[highlight].child.hash)
+            info.innerHTML += "<br><br>W:" + node.w
+            info.innerHTML += "<br>L:" + node.l
+            info.innerHTML += "<br>N:" + node.n
+            info.innerHTML += "<br>ahead:" + node.win
+            info.innerHTML += "<br>predict:" + node.winpredict
+        }
+
+
+        // console.log(p)
+        for (var i = 0; i < 9; i++) {
+            var tr = document.createElement('tr')
+            table.appendChild(tr)
+            for (var j = 0; j < 9; j++) {
+                var id = j + i * 9
+                var td = document.createElement('td')
+                tr.appendChild(td)
+                var small = document.createElement('small')
+                small.textContent = id
+
+                td.textContent = [" ", "X", "O"][state.map[id]]
+                if (i % 3 == 0)
+                    td.style.borderTop = "solid 4px black"
+                if (j % 3 == 0)
+                    td.style.borderLeft = "solid 4px black"
+                if (!state.validActions.includes(id)) td.style.background = 'lightGray'
+                if (state.map[id] == 3) td.style.background = 'gray'
+
+                if (p[id] != undefined) {
+                    node = getNode(p[id].child.hash)
+
+                    td.style.background = `rgba(${255 - p[id].value * 255},${p[id].value * 255},0,.5)`
+                    if (node.win == node.player) td.style.background = `rgb(0,255,0)`
+                    if (node.win == 3 - node.player) td.style.background = `rgb(255,0,0)`
+                    if (node.winpredict == node.player) td.style.background = `rgb(0,255,255,.7)`
+                    if (node.winpredict == 3 - node.player) td.style.background = `rgb(255,0,255,.7)`
+                }
+                // if (id == highlight) td.style.color = "red"
+
+                small.style.position = "absolute"
+                td.style.position = "relative"
+                small.style.top = "0"
+                td.appendChild(small)
+
+
+            }
+        }
+        // console.log(state.localwin)
+
+
+    }
+
+    // s0.place(0)
+
+
+
+    while (window.nstate.win == 0) {
+        var move = window.solve()
+        // var move = s.validActions[Math.floor(Math.random() * s.validActions.length)]
+        // window.record(...move)
+        var s = new State(nstate)
+        s.place(move[0] + move[1] * 9)
+        print(s, move[0] + move[1] * 9)
+        window.record(...move)
+
+    }
+
+    print(window.nstate)
+
+
+
+
+
+
+
+</script>
+
+</html>

@@ -1,0 +1,52 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+
+<pre></pre>
+<style>
+    body {
+        font-size: 12px;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        color: white;
+        overflow: scroll;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0;
+        background-color: black;
+    }
+</style>
+<script src="fakecode.js"></script>
+<script>
+    var pre = document.querySelector('pre');
+    document.body.onclick = function () {
+        var elem = document.body;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        }
+    }
+    function update() {
+
+        var code = generator.next().value;
+        pre.textContent += code;
+
+        if (document.body.scrollHeight - document.body.scrollTop < innerHeight + 200)
+            document.body.scrollTop = document.body.scrollHeight;
+
+        requestAnimationFrame(update);
+    }
+    update();
+</script>

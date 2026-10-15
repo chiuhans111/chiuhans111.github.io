@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Flow</title>
+</head>
+<style>
+    body {
+        margin: 0;
+    }
+
+    canvas {
+        position: absolute;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<body>
+    <canvas></canvas>
+</body>
+<script src="./mini.js"></script>
+<script>
+
+
+
+
+    function GFUNC() {
+
+
+        var a = Array.from(Array(200)).map(x => t());
+
+        var id = 0;
+        function neural() {
+            var arr = Array.from(arguments);
+            arr = arr.map(x => {
+                return mul(x, a[id++]);
+            })
+            return actv(add(...arr, a[id++]));
+        }
+
+        function func(x, y) {
+            id = 0;
+            var n11 = neural(sin(mul(x, v(Math.PI * 2))), cos(mul(x, v(Math.PI * 2))));
+            var n12 = neural(sin(mul(y, v(Math.PI * 2))), cos(mul(y, v(Math.PI * 2))));
+
+            var n13 = neural(sin(mul(x, a[100])), cos(mul(x, a[100])));
+            var n14 = neural(sin(mul(y, a[101])), cos(mul(y, a[101])));
+
+            var n15 = neural(x, y, mul(x, y), mul(x, x), mul(y, y));
+            var n16 = neural(x, y, mul(x, y), mul(x, x), mul(y, y));
+
+            var n21 = neural(n11, n12, n13, n14, n15, n16);
+            var n22 = neural(n11, n12, n13, n14, n15, n16);
+
+            return [add(
+                mul(n21, a[51]),
+                mul(n22, a[52]),
+            ), add(
+                mul(n21, a[53]),
+                mul(n22, a[54]),
+            )];
+        }
+
+        return func;
+    }
+
+    var func = GFUNC();
+
+    var canvas = document.querySelector('canvas');
+    var ctx = canvas.getContext('2d');
+
+    window.onresize = function () {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    window.onresize();
+
+
+    var particles = [];
+
+
+    function draw() {
+        var d = 40;
+
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        particles = particles.filter(p => {
+            return p[0] > 0 && p[1] > 0 &&
+                p[0] < canvas.width &&
+                p[1] < canvas.height &&
+                p[3] > 0
+
+        })
+
+
+        if (particles.length < 400) particles.push(
+            [
+                Math.random() * canvas.width,
+                Math.random() * canvas.height,
+                Math.random() * 10 + 1,
+                Math.random() * 200 + 100,
+            ]
+        )
+
+        particles.map(p => {
+            var r = func(
+                v(p[0] / canvas.width),
+                v(p[1] / canvas.height));
+
+            var dx = r[0].value - 0.5;
+            var dy = r[1].value - 0.5;
+            var dd = Math.sqrt(dx * dx + dy * dy) + 1;
+            p[0] += dx * p[2] / dd * 2;
+            p[1] += dy * p[2] / dd * 2;
+            p[3]--;
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.ellipse(p[0], p[1], 20 / p[2], 20 / p[2], 0, 0, Math.PI * 2);
+            ctx.fill();
+        })
+
+        if (1) {
+
+            var x = mouseX;
+            var y = mouseY;
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            ctx.moveTo(x, y);
+            for (var t = 0; t < 100; t++) {
+                var r = func(
+                    v(x / canvas.width),
+                    v(y / canvas.height));
+                var dx = r[0].value - 0.5;
+                var dy = r[1].value - 0.5;
+                var dd = Math.sqrt(dx * dx + dy * dy) + 1
+                x += dx * 10 / dd;
+                y += dy * 10 / dd;
+                ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+        }
+
+
+
+        targets.map(target => {
+            var x = target[0] * canvas.width;
+            var y = target[1] * canvas.height;
+            var dx = target[2] - 0.5;
+            var dy = target[3] - 0.5;
+            ctx.strokeStyle = 'green';
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + dx * 100, y + dy * 100);
+            ctx.stroke();
+        })
+
+    }
+
+    var targets = [];
+    var mouseX = null;
+    var mouseY = 0;
+    var mousePressed = false;
+    canvas.addEventListener('mousedown', e => {
+        console.log(e.x)
+        mousePressed = true;
+    })
+
+    canvas.addEventListener('mousemove', e => {
+
+        if (mouseX != null && mousePressed) {
+
+            for (var t = 0; t < 100; t++) {
+
+
+                var dx = e.x - mouseX;
+                var dy = e.y - mouseY;
+                var dd = dx * dx + dy * dy;
+                var d = Math.sqrt(dd);
+                if (d < 30) break;
+
+                targets.push([
+                    mouseX / canvas.width,
+                    mouseY / canvas.height,
+                    dx / d / 2 + 0.5,
+                    dy / d / 2 + 0.5
+                ])
+                if (targets.length > 100) targets.shift();
+
+                mouseX += dx * 40 / d;
+                mouseY += dy * 40 / d;
+                console.log(dx, d);
+            }
+
+        } else {
+            mouseX = e.x;
+            mouseY = e.y;
+        }
+
+
+    })
+
+    canvas.addEventListener('mouseup', e => {
+        mousePressed = false;
+    })
+
+
+
+    function update() {
+        var count = 0;
+        while (count < 100) {
+
+            targets.map(target => {
+                var r = func(v(target[0]), v(target[1]));
+
+                var t = add(
+                    pow(add(r[0], v(-target[2])), v(2)),
+                    pow(add(r[1], v(-target[3])), v(2))
+                )
+
+                t.feed(Math.random() * 0.5 + 0.1);
+                count++;
+            })
+
+            count++;
+        }
+        draw();
+        requestAnimationFrame(update);
+    }
+    update();
+
+</script>
+
+</html>

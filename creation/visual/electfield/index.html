@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Electric Field Visualizer</title>
+
+    <style>
+        body,
+        canvas {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+
+<body>
+</body>
+<script src="./electobjects.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.js"></script>
+<script src="./drawing.js"></script>
+<script>
+
+
+
+    // init exects stage
+
+    var elects = new Elect_Group();
+    elects.add(new Elect_Single(300, 500, 2));
+    elects.add(new Elect_Single(500, 500, -2));
+    elects.add(new Elect_Single(500, 500, -2));
+    elects.add(new Elect_Single(500, 500, -2));
+
+
+    var canvas;
+    function setup() {
+        canvas = createCanvas(window.innerWidth, window.innerHeight);
+        window.onresize = function () {
+            canvas.resize(window.innerWidth, window.innerHeight);
+        }
+    }
+
+
+    function mousePressed() {
+        elects.mdown(mouseX, mouseY);
+    }
+
+    function mouseReleased() {
+        elects.mup();
+    }
+
+
+
+
+    function draw() {
+        background(255);
+        elects.draw();
+
+        elects.mmove(mouseX, mouseY);
+
+        for (var i = 0; i < innerWidth; i += 100) {
+            for (var j = 0; j < innerHeight; j += 100) {
+                drawFieldLine(i, j);
+            }
+        }
+
+    }
+
+
+
+
+</script>
+
+</html>

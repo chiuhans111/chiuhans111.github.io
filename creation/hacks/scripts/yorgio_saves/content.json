@@ -1,0 +1,148 @@
+{
+  "random": 2810640393881,
+  "version": 1012,
+  "beta": false,
+  "day": 1,
+  "daySeconds": 1.0000000000692453,
+  "stats": {
+    "gems": 1000000000000000000,
+    "points": 999,
+    "skills": [],
+    "gemsOverTime": {}
+  },
+  "mapSeed": 45244236935,
+  "gamemode": "easy",
+  "view": {
+    "zoom": 1,
+    "x": 5812,
+    "y": 5891
+  },
+  "sync": {
+    "playerId": "MTUzNzk2NDQ2MDQyNC00MTA2NzY0NzIwMgA=",
+    "gameId": "a6723412-a022-4731-9330-3196f500dedf",
+    "playerName": "ohmygod",
+    "pageload": 1537964460427,
+    "usedTutorial": false
+  },
+  "buildings": [
+    {
+      "className": "PlayerBaseMeta",
+      "level": 29,
+      "tileX": 100,
+      "tileY": 100,
+      "storage": {}
+    },
+    {
+      "className": "WallMeta",
+      "level": 0,
+      "tileX": 192,
+      "tileY": 7,
+      "storage": {}
+    },
+    {
+      "className": "WallMeta",
+      "level": 0,
+      "tileX": 7,
+      "tileY": 192,
+      "storage": {}
+    },
+    {
+      "className": "GoldMineMeta",
+      "level": 0,
+      "tileX": 98,
+      "tileY": 100,
+      "storage": {}
+    },
+    {
+      "className": "IronMineMeta",
+      "level": 0,
+      "tileX": 102,
+      "tileY": 99,
+      "storage": {}
+    },
+    {
+      "className": "CannonballProducerMeta",
+      "level": 1,
+      "tileX": 101,
+      "tileY": 100,
+      "storage": {}
+    },
+    {
+      "className": "CannonMeta",
+      "level": 2,
+      "tileX": 102,
+      "tileY": 100,
+      "storage": {}
+    },
+    {
+      "className": "HarvesterMeta",
+      "level": 0,
+      "tileX": 102,
+      "tileY": 104,
+      "storage": {}
+    },
+    {
+      "className": "SteelFactoryMeta",
+      "level": 3,
+      "tileX": 103,
+      "tileY": 100,
+      "storage": {}
+    },
+    {
+      "className": "TransporterMeta",
+      "level": 0,
+      "tileX": 100,
+      "tileY": 101,
+      "storage": {}
+    },
+    {
+      "className": "WoodProcessorMeta",
+      "level": 0,
+      "tileX": 101,
+      "tileY": 101,
+      "storage": {}
+    },
+    {
+      "className": "ArrowFactoryMeta",
+      "level": 6,
+      "tileX": 102,
+      "tileY": 101,
+      "storage": {}
+    },
+    {
+      "className": "ArrowTowerMeta",
+      "level": 5,
+      "tileX": 103,
+      "tileY": 101,
+      "storage": {}
+    },
+    {
+      "className": "UraniumMineMeta",
+      "level": 0,
+      "tileX": 97,
+      "tileY": 103,
+      "storage": {}
+    },
+    {
+      "className": "NuclearStationMeta",
+      "level": 0,
+      "tileX": 99,
+      "tileY": 102,
+      "storage": {}
+    },
+    {
+      "className": "LightningTowerMeta",
+      "level": 4,
+      "tileX": 104,
+      "tileY": 101,
+      "storage": {}
+    },
+    {
+      "className": "HealingTowerMeta",
+      "level": 29,
+      "tileX": 105,
+      "tileY": 101,
+      "storage": {}
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>COMBINATIONS</title>
+
+</head>
+
+<style>
+    p {
+        margin: 4px
+    }
+</style>
+
+<body>
+    <h1>Find combinations! c(n, r)</h1>
+    <p>
+        c (
+        <input type="text" id="n" value="5"> ,
+        <input type="text" id="r" value="4"> )
+        <button id="go">go</button>
+        <div id="output">
+
+        </div>
+    </p>
+</body>
+
+<script>
+
+    function print(content) {
+        ele_output.innerHTML += `<p>${content}</p>`
+    }
+
+    function PrintCombination(array, n, r, prefix = '') {
+        if (r == 0) print(prefix)
+        else
+            for (var i = 0; i <= n - r; i++) {
+                PrintCombination(
+                    array.slice(i + 1),
+                    n - i - 1, r - 1,
+                    prefix + array[i] + ' '
+                )
+            }
+    }
+
+
+    var ele_go = document.getElementById('go')
+    var ele_n = document.getElementById('n')
+    var ele_r = document.getElementById('r')
+    var ele_output = document.getElementById('output')
+
+    ele_go.onclick = function () {
+
+        var n = +ele_n.value
+        var r = +ele_r.value
+
+        ele_output.innerHTML = ''
+
+
+        var array = []
+
+        //Get all elements for combination
+        for (var i = 0; i < n; i++)
+            array.push(i + 1)
+
+        PrintCombination(array, n, r)
+
+        array = null
+    }
+
+</script>
+
+</html>

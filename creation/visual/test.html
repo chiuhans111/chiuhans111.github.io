@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test</title>
+</head>
+
+<style>
+    table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .full {
+        min-height: 500px;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .content {
+        margin: 64px;
+    }
+
+    .page {
+        max-width: 1280px;
+        margin: auto;
+    }
+
+    .rect {
+        position: absolute;
+        background-color: black;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%)
+    }
+</style>
+
+<body class="full">
+    <div class="content">
+        <div class="page">
+
+            <h1>點你覺得比較粗的方形</h1>
+            <p>測量出來，橫的是直的
+                <span id='result'>
+                </span>倍</p>
+            <table>
+                <tr>
+                    <td>
+                        <div class="full">
+                            <div class="rect" id="r1"></div>
+                            <div class="rect" id="r2"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+<script>
+
+    let $ = s => document.querySelector(s)
+    let $$ = s => Array.from(document.querySelectorAll(s))
+
+    let div_problem = $('#problem')
+
+    let r1 = $('#r1')
+    let r2 = $('#r2')
+    let result_span = $('#result')
+
+    function setSize(r, w, h) {
+        r.style.width = `${w}px`
+        r.style.height = `${h}px`
+    }
+
+    setSize(r1, 50, 500)
+    setSize(r2, 50, 500)
+
+
+    function createRect(size, d) {
+        // if d, than is horizontal
+        let w = size
+        let h = 500
+        if (d) [w, h] = [h, w]
+        return { w, h, d, size }
+    }
+
+    records = []
+
+    function record(big, small) {
+        let v2hRatio = null
+        let vbigthanh = null
+        if (big.d && !small.d) {
+            v2hRatio = small.size / big.size
+            vbigthanh = false
+        }
+        if (!big.d && small.d) {
+            v2hRatio = big.size / small.size
+            vbigthanh = true
+        }
+
+        records.push({
+            big, small, v2hRatio, vbigthanh
+        })
+
+        analyse()
+    }
+
+    function analyse() {
+        let vbh = records.filter(x => x.vbigthanh)
+        let hbv = records.filter(x => !x.vbigthanh)
+
+        let mvbhr = vbh.map(x => x.v2hRatio).reduce((a, b) => a < b ? a : b, 2)
+        let mhbvr = hbv.map(x => x.v2hRatio).reduce((a, b) => a > b ? a : b, 0.5)
+        console.log(mvbhr, mhbvr)
+
+        let max = Math.log2(Math.max(mvbhr, mhbvr))
+        let min = Math.log2(Math.min(mvbhr, mhbvr))
+        let p = (max + min) / 2
+
+        let count = 0
+
+        while (true) {
+            p = (max + min) / 2
+            let ratio = Math.pow(2, p)
+            console.log(p)
+
+            var gobig = 0
+
+            records.map(x => {
+
+                if (x.v2hRatio > ratio && !x.vbigthanh) gobig++
+                if (x.v2hRatio < ratio && x.vbigthanh) gobig--
+            })
+
+            if (gobig == 0 || count > 50) break
+            if (gobig > 0) {
+                min = p
+            } else max = p
+            console.log(gobig)
+            count++
+        }
+
+        var result = Math.pow(2, p)
+        result_span.textContent = result
+        console.log('result', result)
+    }
+
+
+    function createProblem() {
+
+        let distance = Math.random() * 50 + 1
+        let small = Math.random() * 100 + 50
+
+        let size1 = small
+        let size2 = small + distance
+
+        if (Math.random() < 0.5) {
+            [size1, size2] = [size2, size1]
+        }
+
+        d1 = Math.random() < 0.5
+        d2 = !d1
+
+        var r1d = createRect(size1, d1)
+        var r2d = createRect(size2, d2)
+
+        setSize(r1, r1d.w, r1d.h)
+        setSize(r2, r2d.w, r2d.h)
+
+        r1.onclick = function () {
+            record(r1d, r2d)
+            createProblem()
+        }
+
+        r2.onclick = function () {
+            record(r2d, r1d)
+            createProblem()
+        }
+
+        window.auto = function () {
+            m = 1.5
+            if (r1d.d) m = 1 / m
+            if (r1d.size * m > r2d.size) record(r1d, r2d)
+            else record(r2d, r1d)
+            createProblem()
+        }
+    }
+
+
+
+    createProblem()
+
+
+</script>
+
+</html>
