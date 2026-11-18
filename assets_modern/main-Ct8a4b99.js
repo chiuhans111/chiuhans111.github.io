@@ -553,8 +553,8 @@ formal_label: "Formal CV"
 
 ## Education
 
-- **M.S.** (AR Waveguide Design) — 2021.09 – 2023.08
-- **B.S.** — 2017.09 – 2021.06
+- **M.S., National Taipei University of Technology (NTUT)** — 2021.09 – 2023.08
+- **B.S., National Taipei University of Technology (NTUT)** — 2017.09 – 2021.06
 
 ## Selected Awards
 
